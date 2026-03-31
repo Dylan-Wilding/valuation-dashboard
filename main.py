@@ -17,11 +17,12 @@ import argparse
 # --- CONFIGURATION ---
 # S&P500 TICKERS :
 # TICKERS = ["NVDA","AAPL","MSFT","AMZN","GOOGL","GOOG","META","AVGO","TSLA","BRK.B","WMT","LLY","JPM","XOM","V","JNJ","MU","COST","ORCL","MA","NFLX","CVX","ABBV","PLTR","PG","HD","BAC","KO","CAT","AMD","GE","CSCO","MRK","RTX","PM","AMAT","LRCX","UNH","MS","TMUS","MCD","GS","IBM","LIN","WFC","INTC","PEP","GEV","VZ","AXP","AMGN","T","NEE","ABT","KLAC","C","GILD","CRM","DIS","TXN","TJX","TMO","ANET","ISRG","BA","APH","SCHW","DE","APP","PFE","UBER","ADI","HON","COP","LMT","WELL","UNP","BLK","QCOM","ETN","PANW","BKNG","LOW","DHR","SYK","CB","SPGI","PLD","INTU","ACN","BMY","PGR","VRTX","NEM","HCA","NOW","MCK","MO","SBUX","PH","CRWD","MDT","COF","CME","GLW","SO","CEG","CMCSA","NOC","DUK","BSX","ADBE","DELL","SNDK","CVS","WM","EQIX","GD","HWM","TT","WDC","ICE","WMB","STX","AMT","ADP","PWR","BX","MRSH","MAR","FDX","UPS","PNC","FCX","BK","NKE","JCI","MMM","USB","SHW","CDNS","SNPS","REGN","MSI","CTAS","ECL","ITW","ORLY","KKR","MCO","ABNB","MNST","EMR","KMI","CMI","RCL","CSX","AEP","EOG","CL","CI","MDLZ","DASH","RSG","PSX","VLO","AON","TDG","COR","WBD","SLB","LHX","HLT","CRH","ROST","MPC","HOOD","GM","TRV","NSC","ELV","APD","SRE","FTNT","DLR","SPG","PCAR","APO","O","AZO","TEL","OXY","AFL","D","TFC","OKE","BKR","VST","ALL","AJG","CTVA","TGT","ADSK","PSA","FAST","MPWR","COIN","TRGP","FANG","XEL","CAH","EXC","GWW","EA","AME","ZTS","NDAQ","NXPI","KEYS","FIX","ETR","CIEN","EW","F","CARR","URI","KR","IDXX","BDX","GRMN","TER","YUM","MET","DDOG","HSY","CVNA","CMG","PEG","ED","PYPL","AIG","VTR","SYY","EBAY","DHI","ROK","WAB","AMP","MSCI","EQT","AXON","PCG","CBRE","FITB","TTWO","DAL","WEC","CCI","ODFL","KDP","NUE","HIG","TPL","LYV","ROP","LVS","XYZ","MLM","WDAY","VMC","ADM","STT","RMD","KVUE","MCHP","ACGL","PAYX","CCL","CPRT","KMB","NRG","OTIS","GEHC","IR","PRU","EL","EME","IRM","A","ATO","DTE","AEE","HBAN","VICI","FISV","CBOE","EXR","TDY","FE","IBKR","MTB","XYL","DG","PPL","CTSH","CNP","TPR","RJF","DVN","HPE","HAL","WAT","UAL","EXPE","VRSK","IQV","CHTR","EIX","DOV","ES","WTW","AWK","FICO","KHC","BIIB","ROL","JBL","DOW","STZ","WRB","EXE","FIS","CINF","NTRS","TSCO","HUBB","DXCM","STLD","CTRA","OMC","BG","MTD","CMS","ULTA","AVB","CFG","LEN","DRI","LYB","BRO","CHD","ON","PHM","Q","ARES","PPG","NI","EQR","VLTO","L","SYF","EFX","LDOS","DGX","VRSN","LH","CPAY","RF","WSM","DLTR","TSN","STE","FSLR","GIS","SW","BR","MRNA","KEY","CHRW","RL","CF","SBAC","HUM","IP","NTAP","TROW","GPN","PKG","SNA","LUV","EXPD","EVRG","JBHT","AMCR","LNT","ALB","PFG","PTC","LULU","SMCI","INCY","DD","CSGP","ZBH","NVR","IFF","HPQ","WST","CNC","WY","HOLX","LII","FTV","BALL","FFIV","HII","ESS","TXT","MKC","AKAM","VTRS","TRMB","PODD","KIM","INVH","TKO","J","TYL","APTV","CDW","NDSN","MAA","GPC","PNR","DECK","REG","IEX","COO","DPZ","CLX","HAS","AVY","BBY","TTD","EG","ERIE","HST","BEN","MAS","GEN","ALLE","HRL","PNW","JKHY","APA","DOC","GNRC","UHS","IT","ALGN","FOX","UDR","SOLV","FOXA","SJM","SWK","GL","AIZ","GDDY","PSKY","BF.B","WYNN","CPT","IVZ","AES","DVA","ZBRA","BLDR","RVTY","MGM","MOS","AOS","FRT","BAX","NWSA","HSIC","NCLH","ARE","BXP","SWKS","TAP","TECH","CAG","MOH","CRL","FDS","POOL","EPAM","MTCH","PAYC","CPB","LW","NWS"]
-# TICKERS = ["RI.PA", "CDI.PA", "SAN.PA", "CS.PA", "VIE.PA", "HEIO.AS", "WKL.AS", "CA.PA", "RNO.PA","SW.PA", "AF.PA", "RF.PA", "FR.PA","SEB.PA", "FRVIA.PA", "TEP.PA", "ELIOR.PA", "NXI.PA", "SMCP.PA", "ALHG.PA"]
-# TICKERS = ["NVDA", "META", "TEP.PA", "AMZN", "BNP.PA", "SOFI", "CRWD", "ZS", "DDOG", "CEG", "MRVL", "NU", "IBM", "TSM", "UBER", "MNDY", "VBK", "NET", "GOOG",   ]
-# TICKERS = ["NVDA","AAPL","MSFT","AMZN","GOOGL","GOOG","META","AVGO","TSLA","BRK.B","WMT","LLY","JPM","XOM","V","JNJ","MU","COST","ORCL","MA","NFLX","CVX","ABBV","PLTR","PG","HD","BAC","KO","CAT","AMD","GE","CSCO","MRK","RTX","PM","AMAT","LRCX","UNH","MS","TMUS","MCD","GS","IBM","LIN","WFC","INTC","PEP","GEV","VZ","AXP","AMGN","T","NEE","ABT","KLAC","C","GILD","CRM","DIS","TXN","TJX","TMO","ANET","ISRG","BA","APH","SCHW","DE","APP","PFE","UBER","ADI","HON","COP","LMT","WELL","UNP","BLK","QCOM","ETN","PANW","BKNG","LOW","DHR","SYK","CB","SPGI","PLD","INTU","ACN","BMY","PGR","VRTX","NEM","HCA","NOW","MCK","MO","SBUX","PH","CRWD","MDT","COF","CME","GLW","SO","CEG","CMCSA","NOC","DUK","BSX","ADBE","DELL","SNDK","CVS","WM","EQIX","GD","HWM","TT","WDC","ICE","WMB","STX","AMT","ADP","PWR","BX","MRSH","MAR","FDX","UPS","PNC","FCX","BK","NKE","JCI","MMM","USB","SHW","CDNS","SNPS","REGN","MSI","CTAS","ECL","ITW","ORLY","KKR","MCO","ABNB","MNST","EMR","KMI","CMI","RCL","CSX","AEP","EOG","CL","CI","MDLZ","DASH","RSG","PSX","VLO","AON","TDG","COR","WBD","SLB","LHX","HLT","CRH","ROST","MPC","HOOD","GM","TRV","NSC","ELV","APD","SRE","FTNT","DLR","SPG","PCAR","APO","O","AZO","TEL","OXY","AFL","D","TFC","OKE","BKR","VST","ALL","AJG","CTVA","TGT","ADSK","PSA","FAST","MPWR","COIN","TRGP","FANG","XEL","CAH","EXC","GWW","EA","AME","ZTS","NDAQ","NXPI","KEYS","FIX","ETR","CIEN","EW","F","CARR","URI","KR","IDXX","BDX","GRMN","TER","YUM","MET","DDOG","HSY","CVNA","CMG","PEG","ED","PYPL","AIG","VTR","SYY","EBAY","DHI","ROK","WAB","AMP","MSCI","EQT","AXON","PCG","CBRE","FITB","TTWO","DAL","WEC","CCI","ODFL","KDP","NUE","HIG","TPL","LYV","ROP","LVS","XYZ","MLM","WDAY","VMC","ADM","STT","RMD","KVUE","MCHP","ACGL","PAYX","CCL","CPRT","KMB","NRG","OTIS","GEHC","IR","PRU","EL","EME","IRM","A","ATO","DTE","AEE","HBAN","VICI","FISV","CBOE","EXR","TDY","FE","IBKR","MTB","XYL","DG","PPL","CTSH","CNP","TPR","RJF","DVN","HPE","HAL","WAT","UAL","EXPE","VRSK","IQV","CHTR","EIX","DOV","ES","WTW","AWK","FICO","KHC","BIIB","ROL","JBL","DOW","STZ","WRB","EXE","FIS","CINF","NTRS","TSCO","HUBB","DXCM","STLD","CTRA","OMC","BG","MTD","CMS","ULTA","AVB","CFG","LEN","DRI","LYB","BRO","CHD","ON","PHM","Q","ARES","PPG","NI","EQR","VLTO","L","SYF","EFX","LDOS","DGX","VRSN","LH","CPAY","RF","WSM","DLTR","TSN","STE","FSLR","GIS","SW","BR","MRNA","KEY","CHRW","RL","CF","SBAC","HUM","IP","NTAP","TROW","GPN","PKG","SNA","LUV","EXPD","EVRG","JBHT","AMCR","LNT","ALB","PFG","PTC","LULU","SMCI","INCY","DD","CSGP","ZBH","NVR","IFF","HPQ","WST","CNC","WY","HOLX","LII","FTV","BALL","FFIV","HII","ESS","TXT","MKC","AKAM","VTRS","TRMB","PODD","KIM","INVH","TKO","J","TYL","APTV","CDW","NDSN","MAA","GPC","PNR","DECK","REG","IEX","COO","DPZ","CLX","HAS","AVY","BBY","TTD","EG","ERIE","HST","BEN","MAS","GEN","ALLE","HRL","PNW","JKHY","APA","DOC","GNRC","UHS","IT","ALGN","FOX","UDR","SOLV","FOXA","SJM","SWK","GL","AIZ","GDDY","PSKY","BF.B","WYNN","CPT","IVZ","AES","DVA","ZBRA","BLDR","RVTY","MGM","MOS","AOS","FRT","BAX","NWSA","HSIC","NCLH","ARE","BXP","SWKS","TAP","TECH","CAG","MOH","CRL","FDS","POOL","EPAM","MTCH","PAYC","CPB","LW","NWS"]
-TICKERS = TICKERS = ["NVDA", "MU", "SNDK", "CLA.PA", "QDT.PA", "SWP.PA", "LIN.PA", "ALMDG.PA", "CAP.PA"]
 
+# NASDAQ100 TICKERS : 
+TICKERS = ["NVDA","AAPL","MSFT","AMZN","GOOGL","GOOG","AVGO","META","TSLA","WMT","ASML","COST","NFLX","MU","PLTR","AMD","CSCO","AMAT","LRCX","TMUS","LIN","PEP","INTC","AMGN","KLAC","TXN","GILD","ISRG","ADI","SHOP","ARM","HON","PDD","QCOM","BKNG","APP","PANW","INTU","VRTX","CEG","CMCSA","SBUX","ADBE","CRWD","WDC","MAR","ADP","MELI","STX","REGN","ORLY","MRVL","CDNS","ABNB","CSX","SNPS","MDLZ","AEP","MNST","CTAS","WBD","ROST","DASH","BKR","PCAR","FTNT","FANG","FAST","EA","EXC","XEL","ADSK","MPWR","NXPI","IDXX","FER","MSTR","ALNY","DDOG","PYPL","CCEP","TRI","ODFL","KDP","ROP","TTWO","INSM","AXON","WDAY","PAYX","MCHP","GEHC","CPRT","CTSH","CHTR","KHC","VRSK","DXCM","ZS","TEAM","CSGP"]
+
+# RUSELL 3000 TICKERS : 
+# TICKERS = ['A', 'AA', 'AAL', 'AAMI', 'AAOI', 'AAON', 'AAP', 'AAPL', 'AAT', 'ABAT', 'ABBV', 'ABCB', 'ABG', 'ABM', 'ABNB', 'ABR', 'ABSI', 'ABT', 'ABUS', 'ACA', 'ACAD', 'ACCO', 'ACDC', 'ACEL', 'ACGL', 'ACH', 'ACHC', 'ACHR', 'ACI', 'ACIC', 'ACIW', 'ACLS', 'ACLX', 'ACM', 'ACMR', 'ACN', 'ACNB', 'ACRE', 'ACT', 'ACTG', 'ACVA', 'ADAM', 'ADBE', 'ADC', 'ADCT', 'ADEA', 'ADI', 'ADM', 'ADMA', 'ADNT', 'ADP', 'ADPT', 'ADRO', 'ADSK', 'ADT', 'ADTN', 'ADUS', 'ADV', 'AEBI', 'AEE', 'AEHR', 'AEIS', 'AEO', 'AEP', 'AES', 'AESI', 'AEVA', 'AFG', 'AFL', 'AFRM', 'AGCO', 'AGIO', 'AGL', 'AGM', 'AGNC', 'AGO', 'AGX', 'AGYS', 'AHCO', 'AHR', 'AHRT', 'AI', 'AIG', 'AIN', 'AIOT', 'AIP', 'AIR', 'AIT', 'AIZ', 'AJG', 'AKAM', 'AKBA', 'AKE', 'AKR', 'AKTS', 'AL', 'ALAB', 'ALB', 'ALDX', 'ALEC', 'ALG', 'ALGM', 'ALGN', 'ALGT', 'ALH', 'ALHC', 'ALIT', 'ALK', 'ALKS', 'ALKT', 'ALL', 'ALLE', 'ALLO', 'ALLY', 'ALMS', 'ALNT', 'ALNY', 'ALRM', 'ALRS', 'ALSN', 'ALT', 'ALTG', 'ALX', 'AM', 'AMAL', 'AMAT', 'AMBA', 'AMBP', 'AMBQ', 'AMC', 'AMCR', 'AMCX', 'AMD', 'AME', 'AMG', 'AMGN', 'AMH', 'AMKR', 'AMLX', 'AMN', 'AMP', 'AMPH', 'AMPL', 'AMPX', 'AMR', 'AMRC', 'AMRX', 'AMSC', 'AMSF', 'AMT', 'AMTB', 'AMTM', 'AMWD', 'AMZN', 'AN', 'ANAB', 'ANDE', 'ANET', 'ANF', 'ANGI', 'ANGO', 'ANIK', 'ANIP', 'ANNX', 'AON', 'AORT', 'AOS', 'AOSL', 'APA', 'APAM', 'APD', 'APEI', 'APG', 'APGE', 'APH', 'APLD', 'APLE', 'APLS', 'APO', 'APOG', 'APP', 'APPF', 'APPN', 'APPS', 'APTV', 'AQST', 'AR', 'ARAY', 'ARCB', 'ARCT', 'ARDX', 'ARE', 'ARES', 'ARHS', 'ARI', 'ARKO', 'ARLO', 'ARMK', 'AROC', 'AROW', 'ARQT', 'ARR', 'ARRY', 'ARVN', 'ARW', 'ARWR', 'AS', 'ASAN', 'ASB', 'ASC', 'ASGN', 'ASH', 'ASIX', 'ASLE', 'ASO', 'ASPI', 'ASPN', 'ASST', 'ASTE', 'ASTH', 'ASTS', 'ASUR', 'ATEC', 'ATEN', 'ATEX', 'ATI', 'ATKR', 'ATMU', 'ATNI', 'ATO', 'ATR', 'ATRC', 'ATRO', 'ATYR', 'AU', 'AUB', 'AUPH', 'AUR', 'AURA', 'AVA', 'AVAH', 'AVAV', 'AVB', 'AVBP', 'AVD', 'AVGO', 'AVIR', 'AVNS', 'AVNT', 'AVNW', 'AVO', 'AVPT', 'AVT', 'AVTR', 'AVXL', 'AVY', 'AWI', 'AWK', 'AWR', 'AX', 'AXGN', 'AXON', 'AXP', 'AXS', 'AXSM', 'AXTA', 'AYI', 'AZO', 'AZTA', 'AZZ', 'BA', 'BAC', 'BAH', 'BALL', 'BAM', 'BANC', 'BAND', 'BANF', 'BANR', 'BATRA', 'BATRK', 'BAX', 'BBAI', 'BBBY', 'BBIO', 'BBNX', 'BBSI', 'BBT', 'BBUC', 'BBW', 'BBWI', 'BBY', 'BC', 'BCAL', 'BCAX', 'BCBP', 'BCC', 'BCML', 'BCO', 'BCPC', 'BCRX', 'BDC', 'BDN', 'BDX', 'BE', 'BEAM', 'BELFB', 'BEN', 'BEPC', 'BETA', 'BETR', 'BFA', 'BFAM', 'BFB', 'BFC', 'BFH', 'BFLY', 'BFS', 'BFST', 'BG', 'BGC', 'BGS', 'BHB', 'BHE', 'BHF', 'BHR', 'BHRB', 'BHVN', 'BIIB', 'BILL', 'BIO', 'BIOA', 'BIPC', 'BIRK', 'BJ', 'BJRI', 'BK', 'BKD', 'BKE', 'BKH', 'BKNG', 'BKR', 'BKSY', 'BKU', 'BKV', 'BL', 'BLBD', 'BLD', 'BLDR', 'BLFS', 'BLFY', 'BLK', 'BLKB', 'BLMN', 'BLND', 'BLSH', 'BLX', 'BMBL', 'BMI', 'BMRC', 'BMRN', 'BMY', 'BNL', 'BOC', 'BOH', 'BOKF', 'BOOM', 'BOOT', 'BORR', 'BOW', 'BOX', 'BPOP', 'BR', 'BRBR', 'BRCC', 'BRKB', 'BRKR', 'BRO', 'BROS', 'BRSL', 'BRSP', 'BRX', 'BRZE', 'BSRR', 'BSX', 'BSY', 'BTBT', 'BTDR', 'BTSG', 'BTU', 'BULL', 'BUR', 'BURL', 'BUSE', 'BV', 'BVS', 'BWA', 'BWB', 'BWIN', 'BWMN', 'BWXT', 'BX', 'BXC', 'BXMT', 'BXP', 'BY', 'BYD', 'BYND', 'BYRN', 'BZH', 'C', 'CABO', 'CAC', 'CACC', 'CACI', 'CAG', 'CAH', 'CAI', 'CAKE', 'CAL', 'CALM', 'CALX', 'CALY', 'CAPR', 'CAR', 'CARE', 'CARG', 'CARR', 'CARS', 'CART', 'CASH', 'CASS', 'CASY', 'CAT', 'CATX', 'CATY', 'CAVA', 'CB', 'CBAN', 'CBL', 'CBLL', 'CBOE', 'CBRE', 'CBRL', 'CBSH', 'CBT', 'CBU', 'CBZ', 'CC', 'CCB', 'CCBG', 'CCC', 'CCI', 'CCK', 'CCL', 'CCNE', 'CCOI', 'CCRN', 'CCS', 'CCSI', 'CDE', 'CDNA', 'CDNS', 'CDP', 'CDRE', 'CDW', 'CDXS', 'CE', 'CECO', 'CEG', 'CELC', 'CELH', 'CENT', 'CENTA', 'CENX', 'CERS', 'CERT', 'CEVA', 'CF', 'CFFN', 'CFG', 'CFR', 'CG', 'CGEM', 'CGNX', 'CGON', 'CHCO', 'CHCT', 'CHD', 'CHDN', 'CHE', 'CHEF', 'CHH', 'CHRD', 'CHRS', 'CHRW', 'CHTR', 'CHWY', 'CI', 'CIEN', 'CIFR', 'CIM', 'CINF', 'CIVB', 'CL', 'CLB', 'CLBK', 'CLDT', 'CLDX', 'CLF', 'CLFD', 'CLH', 'CLMB', 'CLMT', 'CLNE', 'CLOV', 'CLPT', 'CLSK', 'CLVT', 'CLW', 'CLX', 'CMC', 'CMCL', 'CMCO', 'CMCSA', 'CMDB', 'CME', 'CMG', 'CMI', 'CMP', 'CMPR', 'CMPX', 'CMRC', 'CMRE', 'CMS', 'CMT', 'CMTG', 'CNA', 'CNC', 'CNDT', 'CNH', 'CNK', 'CNM', 'CNMD', 'CNNE', 'CNO', 'CNOB', 'CNP', 'CNR', 'CNS', 'CNX', 'CNXC', 'CNXN', 'COCO', 'CODI', 'COF', 'COFS', 'COGT', 'COHR', 'COHU', 'COIN', 'COKE', 'COLB', 'COLD', 'COLL', 'COLM', 'COMP', 'CON', 'COO', 'COP', 'COR', 'CORT', 'CORZ', 'COST', 'COTY', 'COUR', 'CPAY', 'CPB', 'CPF', 'CPK', 'CPNG', 'CPRI', 'CPRT', 'CPRX', 'CPS', 'CPT', 'CR', 'CRAI', 'CRC', 'CRCL', 'CRCT', 'CRDO', 'CRGY', 'CRH', 'CRI', 'CRK', 'CRL', 'CRM', 'CRMD', 'CRML', 'CRMT', 'CRNC', 'CRNX', 'CROX', 'CRS', 'CRSP', 'CRSR', 'CRUS', 'CRVL', 'CRVS', 'CRWD', 'CSCO', 'CSGP', 'CSGS', 'CSL', 'CSR', 'CSTL', 'CSTM', 'CSV', 'CSW', 'CSX', 'CTAS', 'CTBI', 'CTKB', 'CTLP', 'CTO', 'CTOS', 'CTRA', 'CTRE', 'CTRI', 'CTS', 'CTSH', 'CTVA', 'CUBE', 'CUBI', 'CURB', 'CUZ', 'CVBF', 'CVCO', 'CVGW', 'CVI', 'CVLG', 'CVLT', 'CVNA', 'CVRX', 'CVS', 'CVSA', 'CVX', 'CW', 'CWAN', 'CWBC', 'CWCO', 'CWEN', 'CWENA', 'CWH', 'CWK', 'CWST', 'CWT', 'CXM', 'CXT', 'CXW', 'CYH', 'CYRX', 'CYTK', 'CZFS', 'CZNC', 'CZR', 'D', 'DAKT', 'DAL', 'DAN', 'DAR', 'DASH', 'DAVE', 'DAWN', 'DBD', 'DBI', 'DBRG', 'DBX', 'DC', 'DCGO', 'DCH', 'DCI', 'DCO', 'DCOM', 'DD', 'DDD', 'DDOG', 'DDS', 'DE', 'DEA', 'DEC', 'DECK', 'DEI', 'DELL', 'DFH', 'DFIN', 'DFTX', 'DG', 'DGICA', 'DGII', 'DGX', 'DH', 'DHC', 'DHI', 'DHIL', 'DHR', 'DHT', 'DIN', 'DINO', 'DIOD', 'DIS', 'DJCO', 'DJT', 'DK', 'DKNG', 'DKS', 'DLB', 'DLR', 'DLTR', 'DLX', 'DMRC', 'DNLI', 'DNOW', 'DNTH', 'DNUT', 'DOC', 'DOCN', 'DOCS', 'DOCU', 'DOLE', 'DOMO', 'DORM', 'DOV', 'DOW', 'DOX', 'DPZ', 'DRH', 'DRI', 'DRS', 'DRUG', 'DRVN', 'DSGN', 'DSGR', 'DSP', 'DT', 'DTE', 'DTM', 'DUK', 'DUOL', 'DV', 'DVA', 'DVN', 'DX', 'DXC', 'DXCM', 'DXPE', 'DY', 'DYN', 'EA', 'EAT', 'EBAY', 'EBC', 'EBF', 'EBS', 'ECG', 'ECL', 'ECPG', 'ECVT', 'ED', 'EDIT', 'EE', 'EEFT', 'EFC', 'EFSC', 'EFX', 'EG', 'EGBN', 'EGHT', 'EGP', 'EGY', 'EHAB', 'EHC', 'EIG', 'EIX', 'EL', 'ELAN', 'ELF', 'ELS', 'ELV', 'ELVN', 'EMBC', 'EME', 'EMN', 'EMR', 'ENOV', 'ENPH', 'ENR', 'ENS', 'ENSG', 'ENTA', 'ENTG', 'ENVA', 'ENVX', 'EOG', 'EOLS', 'EOSE', 'EPAC', 'EPAM', 'EPC', 'EPM', 'EPR', 'EPRT', 'EQBK', 'EQH', 'EQIX', 'EQR', 'EQT', 'ERAS', 'ERII', 'ES', 'ESAB', 'ESE', 'ESI', 'ESNT', 'ESPR', 'ESQ', 'ESRT', 'ESS', 'ESTC', 'ETD', 'ETN', 'ETON', 'ETR', 'ETSY', 'EU', 'EVC', 'EVCM', 'EVER', 'EVGO', 'EVH', 'EVLV', 'EVR', 'EVRG', 'EVTC', 'EW', 'EWBC', 'EWCZ', 'EWTX', 'EXC', 'EXE', 'EXEL', 'EXLS', 'EXP', 'EXPD', 'EXPE', 'EXPI', 'EXPO', 'EXR', 'EXTR', 'EYE', 'EYPT', 'F', 'FA', 'FAF', 'FANG', 'FAST', 'FATE', 'FBIN', 'FBIZ', 'FBK', 'FBNC', 'FBP', 'FBRT', 'FC', 'FCBC', 'FCF', 'FCFS', 'FCN', 'FCNCA', 'FCPT', 'FCX', 'FDBC', 'FDMT', 'FDP', 'FDS', 'FDX', 'FE', 'FELE', 'FERG', 'FET', 'FFBC', 'FFIC', 'FFIN', 'FFIV', 'FFWM', 'FG', 'FHB', 'FHN', 'FIBK', 'FICO', 'FIGR', 'FIGS', 'FIHL', 'FIP', 'FIS', 'FISI', 'FISV', 'FITB', 'FIVE', 'FIVN', 'FIX', 'FIZZ', 'FLEX', 'FLG', 'FLGT', 'FLNC', 'FLNG', 'FLO', 'FLOC', 'FLR', 'FLS', 'FLUT', 'FLWS', 'FLY', 'FLYW', 'FMAO', 'FMBH', 'FMC', 'FMNB', 'FN', 'FNB', 'FND', 'FNF', 'FNKO', 'FNLC', 'FOLD', 'FOR', 'FORM', 'FORR', 'FOUR', 'FOX', 'FOXA', 'FOXF', 'FPI', 'FR', 'FRBA', 'FRHC', 'FRME', 'FRPH', 'FRPT', 'FRSH', 'FRST', 'FRT', 'FSBC', 'FSBW', 'FSLR', 'FSLY', 'FSS', 'FSUN', 'FTAI', 'FTDR', 'FTI', 'FTNT', 'FTRE', 'FTV', 'FUBO', 'FUL', 'FULC', 'FULT', 'FUN', 'FWONA', 'FWONK', 'FWRD', 'FWRG', 'G', 'GABC', 'GAP', 'GATX', 'GBCI', 'GBTG', 'GBX', 'GCMG', 'GCO', 'GCT', 'GD', 'GDDY', 'GDEN', 'GDOT', 'GDYN', 'GE', 'GEF', 'GEFB', 'GEHC', 'GEN', 'GENI', 'GEO', 'GERN', 'GETY', 'GEV', 'GEVO', 'GFF', 'GFS', 'GGG', 'GH', 'GHC', 'GHM', 'GIC', 'GIII', 'GILD', 'GIS', 'GKOS', 'GL', 'GLDD', 'GLIBA', 'GLIBK', 'GLNG', 'GLOB', 'GLPI', 'GLRE', 'GLUE', 'GLW', 'GM', 'GME', 'GMED', 'GNE', 'GNK', 'GNL', 'GNRC', 'GNTX', 'GNW', 'GO', 'GOGO', 'GOLD', 'GOLF', 'GOOD', 'GOOG', 'GOOGL', 'GOSS', 'GPC', 'GPGI', 'GPI', 'GPK', 'GPN', 'GPOR', 'GPRE', 'GRAL', 'GRBK', 'GRC', 'GRDN', 'GRMN', 'GRND', 'GRNT', 'GRPN', 'GS', 'GSAT', 'GSBC', 'GSHD', 'GT', 'GTES', 'GTLB', 'GTLS', 'GTM', 'GTN', 'GTX', 'GTXI', 'GTY', 'GVA', 'GWRE', 'GWW', 'GXO', 'H', 'HAE', 'HAFC', 'HAIN', 'HAL', 'HALO', 'HAS', 'HASI', 'HAYW', 'HBAN', 'HBCP', 'HBNC', 'HBT', 'HCA', 'HCAT', 'HCC', 'HCI', 'HCKT', 'HCSG', 'HD', 'HDSN', 'HE', 'HEI', 'HEIA', 'HELE', 'HFWA', 'HG', 'HGV', 'HHH', 'HIFS', 'HIG', 'HII', 'HIMS', 'HIPO', 'HIW', 'HL', 'HLF', 'HLI', 'HLIO', 'HLIT', 'HLMN', 'HLNE', 'HLT', 'HLX', 'HMN', 'HNI', 'HNRG', 'HNST', 'HOG', 'HOLX', 'HOMB', 'HON', 'HOOD', 'HOPE', 'HOV', 'HP', 'HPE', 'HPP', 'HPQ', 'HQY', 'HR', 'HRB', 'HRI', 'HRL', 'HRMY', 'HROW', 'HRTG', 'HRTX', 'HSIC', 'HST', 'HSTM', 'HSY', 'HTB', 'HTBK', 'HTFL', 'HTH', 'HTLD', 'HTO', 'HTZ', 'HUBB', 'HUBG', 'HUBS', 'HUM', 'HUMA', 'HUN', 'HURN', 'HUT', 'HVT', 'HWC', 'HWKN', 'HWM', 'HXL', 'HY', 'HYLN', 'HZO', 'IAC', 'IART', 'IBCP', 'IBKR', 'IBM', 'IBOC', 'IBP', 'IBRX', 'IBTA', 'ICE', 'ICFI', 'ICHR', 'ICUI', 'IDA', 'IDCC', 'IDR', 'IDT', 'IDXX', 'IDYA', 'IE', 'IESC', 'IEX', 'IFF', 'IHRT', 'IIIN', 'IIIV', 'IIPR', 'ILMN', 'ILPT', 'IMAX', 'IMKTA', 'IMMR', 'IMNM', 'IMVT', 'IMXI', 'INBK', 'INBX', 'INCY', 'INDB', 'INDI', 'INDV', 'INGM', 'INGN', 'INGR', 'INH', 'INN', 'INOD', 'INR', 'INSE', 'INSM', 'INSP', 'INSW', 'INTA', 'INTC', 'INTU', 'INVA', 'INVH', 'INVX', 'IONQ', 'IONS', 'IOSP', 'IOT', 'IOVA', 'IP', 'IPAR', 'IPGP', 'IPI', 'IQV', 'IR', 'IRDM', 'IRM', 'IRMD', 'IRON', 'IRT', 'IRTC', 'IRWD', 'ISRG', 'IT', 'ITGR', 'ITIC', 'ITRI', 'ITT', 'ITW', 'IVR', 'IVT', 'IVZ', 'J', 'JACK', 'JAKK', 'JANX', 'JAZZ', 'JBGS', 'JBHT', 'JBI', 'JBIO', 'JBL', 'JBLU', 'JBSS', 'JBTM', 'JCI', 'JEF', 'JELD', 'JHG', 'JHX', 'JJSF', 'JKHY', 'JLL', 'JMSB', 'JNJ', 'JOBY', 'JOE', 'JOUT', 'JPM', 'JRVR', 'JXN', 'KAI', 'KALU', 'KALV', 'KBH', 'KBR', 'KD', 'KDP', 'KE', 'KELYA', 'KEX', 'KEY', 'KEYS', 'KFRC', 'KFY', 'KGS', 'KHC', 'KIDS', 'KIM', 'KKR', 'KLAC', 'KLC', 'KLIC', 'KMB', 'KMI', 'KMPR', 'KMT', 'KMTS', 'KMX', 'KN', 'KNF', 'KNSL', 'KNTK', 'KNX', 'KO', 'KOD', 'KODK', 'KOP', 'KOPN', 'KOS', 'KR', 'KRC', 'KREF', 'KRG', 'KRMN', 'KRNY', 'KROS', 'KRRO', 'KRUS', 'KRYS', 'KSS', 'KTB', 'KTOS', 'KURA', 'KVUE', 'KW', 'KWR', 'KYMR', 'L', 'LAB', 'LAD', 'LADR', 'LAMR', 'LAND', 'LASR', 'LAUR', 'LAW', 'LAZ', 'LBRDA', 'LBRDK', 'LBRT', 'LBTYA', 'LBTYK', 'LC', 'LCID', 'LCII', 'LDOS', 'LEA', 'LECO', 'LEG', 'LEN', 'LENB', 'LENZ', 'LEU', 'LFST', 'LFUS', 'LGIH', 'LGN', 'LGND', 'LH', 'LHX', 'LIF', 'LII', 'LILA', 'LILAK', 'LIN', 'LINC', 'LIND', 'LINE', 'LION', 'LITE', 'LIVN', 'LKFN', 'LKQ', 'LLY', 'LLYVA', 'LLYVK', 'LMAT', 'LMB', 'LMND', 'LMNR', 'LMT', 'LNC', 'LNG', 'LNN', 'LNT', 'LNTH', 'LOAR', 'LOB', 'LOCO', 'LOPE', 'LOVE', 'LOW', 'LPG', 'LPLA', 'LPRO', 'LPX', 'LQDA', 'LQDT', 'LRCX', 'LRMR', 'LRN', 'LSCC', 'LSTR', 'LTC', 'LTH', 'LULU', 'LUMN', 'LUNG', 'LUNR', 'LUV', 'LVS', 'LW', 'LXEO', 'LXFR', 'LXP', 'LXU', 'LYB', 'LYFT', 'LYTS', 'LYV', 'LZ', 'LZB', 'M', 'MA', 'MAA', 'MAC', 'MAMA', 'MAN', 'MANH', 'MAR', 'MARA', 'MAS', 'MASI', 'MASS', 'MAT', 'MATV', 'MATW', 'MATX', 'MAX', 'MAZE', 'MBC', 'MBI', 'MBIN', 'MBUU', 'MBWM', 'MBX', 'MC', 'MCB', 'MCBS', 'MCD', 'MCFT', 'MCHB', 'MCHP', 'MCK', 'MCO', 'MCRI', 'MCS', 'MCW', 'MCY', 'MD', 'MDB', 'MDGL', 'MDLN', 'MDLZ', 'MDT', 'MDU', 'MDXG', 'MED', 'MEDP', 'MEG', 'MEI', 'MET', 'META', 'METC', 'MFA', 'MGEE', 'MGM', 'MGNI', 'MGPI', 'MGRC', 'MGTX', 'MGY', 'MHK', 'MHO', 'MIAX', 'MIDD', 'MIR', 'MIRM', 'MITK', 'MKC', 'MKL', 'MKSI', 'MKTX', 'MLAB', 'MLI', 'MLKN', 'MLM', 'MLR', 'MLYS', 'MMI', 'MMM', 'MMS', 'MMSI', 'MNKD', 'MNRO', 'MNST', 'MNTK', 'MO', 'MOD', 'MOGA', 'MOH', 'MORN', 'MOS', 'MOV', 'MP', 'MPB', 'MPC', 'MPLT', 'MPT', 'MPWR', 'MQ', 'MRCY', 'MRK', 'MRNA', 'MRP', 'MRSH', 'MRTN', 'MRVI', 'MRVL', 'MRX', 'MS', 'MSA', 'MSBI', 'MSCI', 'MSEX', 'MSFT', 'MSGE', 'MSGS', 'MSI', 'MSM', 'MSTR', 'MTB', 'MTCH', 'MTD', 'MTDR', 'MTG', 'MTH', 'MTN', 'MTRN', 'MTSI', 'MTUS', 'MTW', 'MTX', 'MTZ', 'MU', 'MUR', 'MUSA', 'MVBF', 'MVIS', 'MVST', 'MWA', 'MXCT', 'MXL', 'MYE', 'MYGN', 'MYPS', 'MYRG', 'MZTI', 'NABL', 'NAGE', 'NAT', 'NATL', 'NAVI', 'NAVN', 'NB', 'NBBK', 'NBHC', 'NBIX', 'NBN', 'NBR', 'NBTB', 'NCLH', 'NCMI', 'NCNO', 'NDAQ', 'NDSN', 'NE', 'NECB', 'NEE', 'NEM', 'NEO', 'NEOG', 'NESR', 'NET', 'NEU', 'NEWT', 'NEXT', 'NFBK', 'NFE', 'NFG', 'NFLX', 'NG', 'NGNE', 'NGVC', 'NGVT', 'NHC', 'NHI', 'NI', 'NIC', 'NIQ', 'NJR', 'NKE', 'NKTX', 'NLOP', 'NLY', 'NMIH', 'NMRK', 'NN', 'NNE', 'NNI', 'NNN', 'NNOX', 'NOC', 'NOG', 'NOV', 'NOVT', 'NOW', 'NPCE', 'NPK', 'NPKI', 'NPO', 'NRC', 'NRDS', 'NRG', 'NRIM', 'NRIX', 'NSA', 'NSC', 'NSIT', 'NSP', 'NSSC', 'NTAP', 'NTB', 'NTCT', 'NTGR', 'NTLA', 'NTNX', 'NTRA', 'NTRS', 'NTST', 'NU', 'NUE', 'NUS', 'NUTX', 'NUVB', 'NUVL', 'NVAX', 'NVCR', 'NVDA', 'NVEC', 'NVR', 'NVRI', 'NVST', 'NVT', 'NVTS', 'NWBI', 'NWE', 'NWL', 'NWN', 'NWPX', 'NWS', 'NWSA', 'NX', 'NXDR', 'NXDT', 'NXRT', 'NXST', 'NXT', 'NYT', 'O', 'OABI', 'OBK', 'OBT', 'OC', 'OCFC', 'OCUL', 'ODC', 'ODFL', 'OEC', 'OFG', 'OFIX', 'OFLX', 'OGE', 'OGN', 'OGS', 'OHI', 'OI', 'OII', 'OIS', 'OKE', 'OKLO', 'OKTA', 'OLED', 'OLLI', 'OLMA', 'OLN', 'OLP', 'OLPX', 'OMC', 'OMCL', 'OMDA', 'OMER', 'OMF', 'ON', 'ONB', 'ONEW', 'ONIT', 'ONON', 'ONTF', 'ONTO', 'OOMA', 'OPCH', 'OPK', 'OPLN', 'OPRX', 'OPTU', 'ORA', 'ORC', 'ORCL', 'ORGO', 'ORI', 'ORIC', 'ORKA', 'ORLY', 'ORRF', 'OSBC', 'OSCR', 'OSG', 'OSIS', 'OSK', 'OSPN', 'OSUR', 'OSW', 'OTIS', 'OTTR', 'OUST', 'OUT', 'OVV', 'OWL', 'OXM', 'OXY', 'OZK', 'P5N994', 'PACB', 'PACK', 'PACS', 'PAG', 'PAGS', 'PAHC', 'PANL', 'PANW', 'PAR', 'PARR', 'PATH', 'PATK', 'PAX', 'PAYC', 'PAYO', 'PAYS', 'PAYX', 'PB', 'PBF', 'PBH', 'PBI', 'PCAR', 'PCG', 'PCOR', 'PCRX', 'PCT', 'PCTY', 'PCVX', 'PD', 'PDFS', 'PDM', 'PEB', 'PEBO', 'PECO', 'PEG', 'PEGA', 'PEN', 'PENG', 'PENN', 'PEP', 'PFBC', 'PFE', 'PFG', 'PFGC', 'PFIS', 'PFS', 'PFSI', 'PG', 'PGC', 'PGEN', 'PGNY', 'PGR', 'PGY', 'PH', 'PHAT', 'PHIN', 'PHM', 'PHR', 'PI', 'PII', 'PINS', 'PIPR', 'PJT', 'PK', 'PKE', 'PKG', 'PKST', 'PL', 'PLAB', 'PLAY', 'PLD', 'PLMR', 'PLNT', 'PLOW', 'PLPC', 'PLSE', 'PLTK', 'PLTR', 'PLUG', 'PLUS', 'PLXS', 'PM', 'PMT', 'PNC', 'PNFP', 'PNR', 'PNTG', 'PNW', 'PODD', 'POOL', 'POR', 'POST', 'POWI', 'POWL', 'POWW', 'PPC', 'PPG', 'PPL', 'PPTA', 'PR', 'PRA', 'PRAA', 'PRAX', 'PRCH', 'PRCT', 'PRDO', 'PRG', 'PRGO', 'PRGS', 'PRI', 'PRIM', 'PRK', 'PRKS', 'PRLB', 'PRM', 'PRMB', 'PRME', 'PRSU', 'PRTA', 'PRTH', 'PRU', 'PRVA', 'PSA', 'PSFE', 'PSIX', 'PSMT', 'PSN', 'PSTG', 'PSTL', 'PSX', 'PTC', 'PTCT', 'PTEN', 'PTGX', 'PTLO', 'PTON', 'PUBM', 'PUMP', 'PVH', 'PVLA', 'PWP', 'PWR', 'PYPL', 'PZZA', 'Q', 'QBTS', 'QCOM', 'QCRH', 'QDEL', 'QGEN', 'QLYS', 'QNST', 'QRVO', 'QS', 'QSI', 'QSR', 'QTRX', 'QTWO', 'QUBT', 'QXO', 'R', 'RAL', 'RAMP', 'RAPP', 'RARE', 'RBA', 'RBB', 'RBBN', 'RBC', 'RBCAA', 'RBLX', 'RBRK', 'RC', 'RCAT', 'RCEL', 'RCKT', 'RCL', 'RCUS', 'RDDT', 'RDN', 'RDNT', 'RDVT', 'RDW', 'REAL', 'REAX', 'REFI', 'REG', 'REGN', 'RELY', 'REPL', 'REPX', 'RES', 'REX', 'REXR', 'REYN', 'REZI', 'RF', 'RGA', 'RGEN', 'RGLD', 'RGNX', 'RGP', 'RGR', 'RGTI', 'RH', 'RHI', 'RHLD', 'RHP', 'RICK', 'RIG', 'RIGL', 'RIOT', 'RITM', 'RIVN', 'RJF', 'RKLB', 'RKT', 'RL', 'RLAY', 'RLI', 'RLJ', 'RM', 'RMAX', 'RMBS', 'RMD', 'RMNI', 'RMR', 'RNA', 'RNG', 'RNR', 'RNST', 'ROAD', 'ROCK', 'ROG', 'ROIV', 'ROK', 'ROKU', 'ROL', 'ROOT', 'ROP', 'ROST', 'RPAY', 'RPC', 'RPD', 'RPM', 'RPRX', 'RRBI', 'RRC', 'RRR', 'RRX', 'RS', 'RSG', 'RSI', 'RTX', 'RUM', 'RUN', 'RUSHA', 'RUSHB', 'RVLV', 'RVMD', 'RVTY', 'RWT', 'RXO', 'RXRX', 'RXST', 'RYAM', 'RYAN', 'RYN', 'RYTM', 'RYZ', 'RZLV', 'S', 'SABR', 'SAFE', 'SAFT', 'SAH', 'SAIA', 'SAIC', 'SAIL', 'SAM', 'SANA', 'SANM', 'SARO', 'SATS', 'SB', 'SBAC', 'SBCF', 'SBGI', 'SBH', 'SBRA', 'SBSI', 'SBUX', 'SCCO', 'SCHL', 'SCHW', 'SCI', 'SCL', 'SCSC', 'SCVL', 'SD', 'SDGR', 'SDRL', 'SEAT', 'SEB', 'SEE', 'SEG', 'SEI', 'SEIC', 'SEM', 'SEMR', 'SENEA', 'SEPN', 'SERV', 'SEZL', 'SF', 'SFBS', 'SFD', 'SFIX', 'SFL', 'SFM', 'SFNC', 'SFST', 'SG', 'SGHC', 'SGI', 'SGRY', 'SHAK', 'SHBI', 'SHC', 'SHEN', 'SHLS', 'SHO', 'SHOO', 'SHW', 'SIBN', 'SIG', 'SIGA', 'SIGI', 'SILA', 'SION', 'SIRI', 'SITC', 'SITE', 'SITM', 'SJM', 'SKIN', 'SKT', 'SKWD', 'SKY', 'SKYT', 'SKYW', 'SLAB', 'SLB', 'SLDB', 'SLDE', 'SLDP', 'SLG', 'SLGN', 'SLM', 'SLNO', 'SLP', 'SLQT', 'SLS', 'SLVM', 'SM', 'SMA', 'SMBC', 'SMBK', 'SMCI', 'SMG', 'SMMT', 'SMP', 'SMPL', 'SMR', 'SMTC', 'SN', 'SNA', 'SNBR', 'SNCY', 'SNDK', 'SNDR', 'SNDX', 'SNEX', 'SNOW', 'SNPS', 'SNX', 'SO', 'SOC', 'SOFI', 'SOLS', 'SOLV', 'SON', 'SONO', 'SOUN', 'SPB', 'SPFI', 'SPG', 'SPGI', 'SPHR', 'SPNT', 'SPOK', 'SPOT', 'SPRY', 'SPSC', 'SPT', 'SPXC', 'SR', 'SRCE', 'SRE', 'SRPT', 'SRRK', 'SRTA', 'SSB', 'SSD', 'SSNC', 'SSP', 'SSRM', 'SSTI', 'SSTK', 'ST', 'STAA', 'STAG', 'STBA', 'STC', 'STE', 'STEL', 'STEP', 'STGW', 'STKL', 'STLD', 'STNE', 'STNG', 'STOK', 'STRA', 'STRL', 'STRZ', 'STT', 'STWD', 'STZ', 'SUI', 'SUNS', 'SUPN', 'SVC', 'SVRA', 'SVV', 'SW', 'SWBI', 'SWK', 'SWKS', 'SWX', 'SXC', 'SXI', 'SXT', 'SYBT', 'SYF', 'SYK', 'SYNA', 'SYRE', 'SYY', 'T', 'TALK', 'TALO', 'TAP', 'TARS', 'TBBK', 'TBCH', 'TBI', 'TBPH', 'TCBI', 'TCBK', 'TCBX', 'TCMD', 'TCX', 'TDAY', 'TDC', 'TDG', 'TDOC', 'TDS', 'TDUP', 'TDW', 'TDY', 'TE', 'TEAD', 'TEAM', 'TECH', 'TECX', 'TEM', 'TENB', 'TER', 'TERN', 'TEX', 'TFC', 'TFIN', 'TFSL', 'TFX', 'TG', 'TGLS', 'TGT', 'TGTX', 'TH', 'THC', 'THFF', 'THG', 'THO', 'THR', 'THRD', 'THRM', 'THRY', 'TIC', 'TIGO', 'TILE', 'TIPT', 'TITN', 'TJX', 'TK', 'TKO', 'TKR', 'TLN', 'TMCI', 'TMDX', 'TMHC', 'TMO', 'TMP', 'TMUS', 'TNC', 'TNDM', 'TNET', 'TNGX', 'TNK', 'TNL', 'TOL', 'TOST', 'TOWN', 'TPB', 'TPC', 'TPG', 'TPH', 'TPL', 'TPR', 'TR', 'TRC', 'TRDA', 'TREE', 'TREX', 'TRGP', 'TRIP', 'TRMB', 'TRMK', 'TRN', 'TRNO', 'TRNS', 'TROW', 'TROX', 'TRS', 'TRST', 'TRTX', 'TRU', 'TRUP', 'TRV', 'TRVI', 'TSBK', 'TSCO', 'TSHA', 'TSLA', 'TSN', 'TT', 'TTC', 'TTD', 'TTEC', 'TTEK', 'TTGT', 'TTI', 'TTMI', 'TTWO', 'TVTX', 'TW', 'TWI', 'TWLO', 'TWO', 'TWST', 'TXG', 'TXN', 'TXNM', 'TXRH', 'TXT', 'TYL', 'TYRA', 'U', 'UA', 'UAA', 'UAL', 'UAMY', 'UBER', 'UBSI', 'UCB', 'UCTT', 'UDMY', 'UDR', 'UE', 'UEC', 'UFCS', 'UFPI', 'UFPT', 'UGI', 'UHAL', 'UHALB', 'UHS', 'UHT', 'UI', 'UIS', 'ULCC', 'ULH', 'ULTA', 'UMBF', 'UMH', 'UNF', 'UNFI', 'UNH', 'UNIT', 'UNM', 'UNP', 'UNTY', 'UPB', 'UPBD', 'UPS', 'UPST', 'UPWK', 'URBN', 'URGN', 'URI', 'USAR', 'USB', 'USFD', 'USLM', 'USNA', 'USPH', 'UTHR', 'UTI', 'UTL', 'UTMD', 'UTZ', 'UUUU', 'UVE', 'UVSP', 'UVV', 'UWMC', 'V', 'VAC', 'VAL', 'VC', 'VCEL', 'VCTR', 'VCYT', 'VECO', 'VEEV', 'VEL', 'VERA', 'VERX', 'VFC', 'VIAV', 'VICI', 'VICR', 'VIK', 'VIR', 'VIRT', 'VISN', 'VITL', 'VKTX', 'VLO', 'VLTO', 'VLY', 'VMC', 'VMD', 'VMI', 'VNDA', 'VNO', 'VNOM', 'VNT', 'VOYA', 'VOYG', 'VPG', 'VRDN', 'VRE', 'VREX', 'VRNS', 'VRRM', 'VRSK', 'VRSN', 'VRT', 'VRTS', 'VRTX', 'VSAT', 'VSCO', 'VSEC', 'VSH', 'VSNT', 'VST', 'VSTM', 'VSTS', 'VTOL', 'VTR', 'VTRS', 'VTS', 'VVV', 'VVX', 'VYGR', 'VYX', 'VZ', 'W', 'WAB', 'WABC', 'WAFD', 'WAL', 'WALD', 'WASH', 'WAT', 'WAY', 'WBD', 'WBS', 'WCC', 'WD', 'WDAY', 'WDC', 'WDFC', 'WEAV', 'WEC', 'WELL', 'WEN', 'WERN', 'WEST', 'WEX', 'WFC', 'WFRD', 'WGO', 'WGS', 'WH', 'WHD', 'WHR', 'WINA', 'WING', 'WK', 'WKC', 'WLDN', 'WLFC', 'WLK', 'WLY', 'WM', 'WMB', 'WMK', 'WMS', 'WMT', 'WNC', 'WOOF', 'WOR', 'WPC', 'WRB', 'WRBY', 'WRLD', 'WS', 'WSBC', 'WSBF', 'WSC', 'WSFS', 'WSM', 'WSO', 'WSR', 'WST', 'WT', 'WTBA', 'WTFC', 'WTI', 'WTM', 'WTRG', 'WTS', 'WTTR', 'WTW', 'WU', 'WULF', 'WVE', 'WWD', 'WWW', 'WY', 'WYNN', 'XEL', 'XENE', 'XERS', 'XHR', 'XMTR', 'XNCR', 'XOM', 'XP', 'XPEL', 'XPER', 'XPO', 'XPOF', 'XPRO', 'XRAY', 'XRN', 'XRX', 'XYL', 'XYZ', 'YELP', 'YETI', 'YEXT', 'YORW', 'YOU', 'YUM', 'Z', 'ZBH', 'ZBIO', 'ZBRA', 'ZD', 'ZETA', 'ZG', 'ZION', 'ZIP', 'ZM', 'ZS', 'ZTS', 'ZUMZ', 'ZVRA', 'ZWS', 'ZYME']
 
 BASE_DIR = Path(__file__).resolve().parent
 FILENAME = BASE_DIR / "Holden_Model_MU.xlsx"
@@ -30,7 +31,7 @@ USER_AGENT = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
 
 # --- MODEL TUNING CONSTANTS ---
-# Insider Conviction Scoring Thresholds, based on the academic literature.
+# Insider Conviction Scoring Thresholds, based on the existing academic literature.
 INSIDER_DOLLAR_LARGE = 1_000_000
 INSIDER_PCT_LARGE = 0.0002
 INSIDER_DOLLAR_MODERATE = 250_000
@@ -261,6 +262,11 @@ def get_data(ticker):
     pe_low_hist = max(MIN_HISTORICAL_PE_LOW, pe_current * 0.7)
     pe_high_hist = max(MIN_HISTORICAL_PE_HIGH, pe_current * 1.3)
 
+    # --- Historical 1Y Trend variables (computed inside rolling PE block) ---
+    perf_1y = 0.0
+    eps_trend_1y = 0.0
+    pe_trend_1y = 0.0
+
     # Calculate ROLLING Historical P/E Ranges safely via yfinance
     try:
         hist = stock.history(period=ROLLING_PE_PERIOD)
@@ -305,6 +311,30 @@ def get_data(ticker):
             if not daily_pe.empty:
                 pe_low_hist = daily_pe.quantile(PE_LOW_QUANTILE)
                 pe_high_hist = daily_pe.quantile(PE_HIGH_QUANTILE)
+
+            # --- Compute Historical 1Y Trends from the rolling series ---
+            one_year_ago = closes.index[-1] - pd.DateOffset(years=1)
+
+            # 1Y Price Performance
+            closes_1y = closes[closes.index >= one_year_ago]
+            if len(closes_1y) >= 2:
+                perf_1y = (closes_1y.iloc[-1] / closes_1y.iloc[0]) - 1
+
+            # 1Y EPS Trend (prefer street, fall back to GAAP)
+            eps_series = ttm_street_series if not ttm_street_series.dropna().empty else ttm_gaap_series
+            eps_1y = eps_series[eps_series.index >= one_year_ago].dropna()
+            if len(eps_1y) >= 2 and eps_1y.iloc[0] != 0:
+                eps_trend_1y = (eps_1y.iloc[-1] / eps_1y.iloc[0]) - 1
+            elif eps_street_prior and eps_street_prior != 0:
+                eps_trend_1y = (eps_street_ttm / eps_street_prior) - 1
+
+            # 1Y P/E Trend (from daily PE series, or derive via identity)
+            pe_1y = daily_pe[daily_pe.index >= one_year_ago]
+            if len(pe_1y) >= 2 and pe_1y.iloc[0] != 0:
+                pe_trend_1y = (pe_1y.iloc[-1] / pe_1y.iloc[0]) - 1
+            elif (1 + eps_trend_1y) != 0:
+                pe_trend_1y = ((1 + perf_1y) / (1 + eps_trend_1y)) - 1
+
     except Exception as e:
         print(f"  [{clean_ticker}] Rolling PE calculation fallback failed: {e}")
 
@@ -334,7 +364,8 @@ def get_data(ticker):
         'pe_current': pe_current, 'pe_low_hist': pe_low_hist, 'pe_high_hist': pe_high_hist,
         'cagr_3y': cagr_3y, 'surprise_avg': surprise_display_val, 'analysts': analyst_count,
         'insider_net': insider_data['net_buying'], 'insider_buy_count': insider_data['unique_buyers'],
-        'insider_avg_stake_inc': insider_data['avg_stake_inc']
+        'insider_avg_stake_inc': insider_data['avg_stake_inc'],
+        'perf_1y': perf_1y, 'eps_trend_1y': eps_trend_1y, 'pe_trend_1y': pe_trend_1y
     }
 
 # Copyright (c) 2026 Dylan H Wilding. All rights reserved.
@@ -519,6 +550,9 @@ if __name__ == "__main__":
         ref_est_year_nxt = get_ref(25)
         ref_insider_count = get_ref(26)
         ref_avg_stake = get_ref(27)
+        ref_perf_1y = get_ref(28)
+        ref_eps_trend_1y = get_ref(29)
+        ref_pe_trend_1y = get_ref(30)
 
         dash_row, dash_col = 2, 15
         lists = {'Growth': 'Inputs!$A$2:$A$3', 'EPS': 'Inputs!$B$2:$B$3', 'PE': 'Inputs!$C$2:$C$4',
@@ -762,6 +796,34 @@ if __name__ == "__main__":
         sheet.write(r, stats_col, "Realizable Upside %", fmt['stat_label'])
         sheet.write_formula(r, stats_col + 1, '=IF(G34="NM", "NM", G21/MAX(1, G34))', fmt['stat_val_real'])
 
+        # --- HISTORICAL TRENDS (1Y) ---
+        r += 2
+        sheet.write(r, stats_col, "Historical Trends (1Y)", fmt['stat_subhead'])
+        r += 1
+        sheet.write(r, stats_col, "1Y Price Performance", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_perf_1y}', fmt['stat_val_score'])
+        trend_cell = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.conditional_format(trend_cell, {'type': 'cell', 'criteria': '<', 'value': 0, 'format': fmt['diag_warn']})
+        sheet.conditional_format(trend_cell, {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': fmt['diag_ok']})
+        r += 1
+        sheet.write(r, stats_col, "1Y EPS Trend", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_eps_trend_1y}', fmt['stat_val_score'])
+        trend_cell = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.conditional_format(trend_cell, {'type': 'cell', 'criteria': '<', 'value': 0, 'format': fmt['diag_warn']})
+        sheet.conditional_format(trend_cell, {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': fmt['diag_ok']})
+        r += 1
+        sheet.write(r, stats_col, "1Y P/E Trend", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_pe_trend_1y}', fmt['stat_val_score'])
+        trend_cell = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.conditional_format(trend_cell, {'type': 'cell', 'criteria': '<', 'value': 0, 'format': fmt['diag_warn']})
+        sheet.conditional_format(trend_cell, {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': fmt['diag_ok']})
+        r += 1
+        sheet.write(r, stats_col, "1Y Earnings-Return Gap (ERG)", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'=IF({ref_eps_trend_1y}>0, {ref_eps_trend_1y} - {ref_perf_1y}, "N/A (EPS < 0)")', fmt['stat_val_score'])
+        ufa_cell = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.conditional_format(ufa_cell, {'type': 'cell', 'criteria': '<', 'value': 0, 'format': fmt['diag_warn']})
+        sheet.conditional_format(ufa_cell, {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': fmt['diag_ok']})
+
         # --- INSIDER ACTIVITY & CONVICTION SCORING ENGINE ---
         r += 2
         sheet.write(r, stats_col, "Insider Activity (L6M)", fmt['stat_subhead'])
@@ -821,7 +883,8 @@ if __name__ == "__main__":
         "Current P/E (Adj)", "Forward P/E", "PEG Ratio",
         "Holden Score", "Safety Cushion", "Resilience Ratio",
         "Insider Net L6M ($)", "Unique Buyers", "Avg Stake Inc (%)",
-        "Conviction Score (0-10)", "Growth Diagnosis"
+        "Conviction Score (0-10)", "Growth Diagnosis",
+        "1Y Perf", "1Y EPS Δ", "1Y P/E Δ", "1Y ERG Score"
     ]
     ws_comp.write_row(0, 0, cols, fmt_comp_h)
     comp_data = []
@@ -877,9 +940,14 @@ if __name__ == "__main__":
         growth_diag = "⚠️ Cyclical Rebound" if (
             street_ttm < street_prior if street_ttm != 0 else basic_ttm < basic_prior) else "✔ Organic"
 
+        eps_trend_1y = d['eps_trend_1y']
+        pe_trend_1y = d['pe_trend_1y']
+        perf_1y = d['perf_1y']
+        erg_score = (eps_trend_1y - perf_1y) if eps_trend_1y > 0 else "N/A"
+
         comp_data.append([tick, name, sector, mcap, price, target_price, upside, pe_curr, pe_fwd, peg,
                           holden_score, cushion, resilience, insider, insider_count, avg_stake / 100, conviction_score,
-                          growth_diag])
+                          growth_diag, perf_1y, eps_trend_1y, pe_trend_1y, erg_score])
 
     for i, row in enumerate(comp_data):
         ws_comp.write(i + 1, 0, row[0], fmt['comp_ticker'])
@@ -900,6 +968,13 @@ if __name__ == "__main__":
         ws_comp.write(i + 1, 15, row[15], fmt['stat_val_score'])
         ws_comp.write(i + 1, 16, row[16], fmt['comp_int'])
         ws_comp.write(i + 1, 17, row[17], fmt['comp_txt'])
+        ws_comp.write(i + 1, 18, row[18], fmt['comp_pct'])
+        ws_comp.write(i + 1, 19, row[19], fmt['comp_pct'])
+        ws_comp.write(i + 1, 20, row[20], fmt['comp_pct'])
+        if isinstance(row[21], str):
+            ws_comp.write(i + 1, 21, row[21], fmt['comp_txt'])
+        else:
+            ws_comp.write(i + 1, 21, row[21], fmt['comp_pct'])
 
     if comp_data:
         ws_comp.add_table(0, 0, len(comp_data), len(cols) - 1, {
@@ -914,6 +989,7 @@ if __name__ == "__main__":
     ws_comp.set_column(3, 3, 16)
     ws_comp.set_column(4, 16, 14)
     ws_comp.set_column(17, 17, 20)
+    ws_comp.set_column(18, 21, 12)
 
     # 3. CREATE INPUTS SHEET
     print("  Generating Inputs Sheet...")
@@ -944,7 +1020,7 @@ if __name__ == "__main__":
                'Region',
                'Surprise Avg 4Q', 'Analyst Count', 'Est Target FY', 'Insider Net L6M', 'Company Name', 'Market Cap',
                'EPS Low Nxt', 'EPS Mid Nxt', 'EPS High Nxt', 'Est Target FY Nxt', 'Unique Buyers Count',
-               'Avg Stake Increase %']
+               'Avg Stake Increase %', 'Perf 1Y', 'EPS Trend 1Y', 'PE Trend 1Y']
 
     fmt_head = workbook.add_format({'bold': True, 'bottom': 1})
     ws_inputs.write_row(data_start_row, 0, headers, fmt_head)
@@ -956,7 +1032,8 @@ if __name__ == "__main__":
                     d['pe_current'], d['pe_low_hist'], d['pe_high_hist'], d['cagr_3y'], d['sector'], d['region'],
                     d.get('surprise_avg', 0), d.get('analysts', 0), d['est_year_str'], d['insider_net'],
                     d['company_name'], d['market_cap'], d['eps_low_nxt'], d['eps_mid_nxt'], d['eps_high_nxt'],
-                    d['est_year_str_nxt'], d['insider_buy_count'], d['insider_avg_stake_inc']]
+                    d['est_year_str_nxt'], d['insider_buy_count'], d['insider_avg_stake_inc'],
+                    d['perf_1y'], d['eps_trend_1y'], d['pe_trend_1y']]
         ws_inputs.write_row(r, 0, row_data)
 
     writer.close()
