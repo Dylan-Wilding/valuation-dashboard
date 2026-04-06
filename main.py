@@ -28,12 +28,12 @@ import argparse
 # Assurance-Vie Compliant : 
 # TICKERS = ["AMUN.PA","RF.PA","LDO.MI","NEX.PA","PLTR","RHM.DE","RR.L","GLE.PA","BBVA.MC","BAYN.DE","UCG.MI","MT","HO.PA","SPIE.PA","INGA.AS","EN.PA","ISP.MI","NDA-FI.HE","ORA.PA","ENGI.PA","GOOGL","FGR.PA","SAF.PA","CAT","IBE.MC","AM.PA","PRX.AS","DPW.DE","RXL.PA","BNP.PA","ASML.AS","GS","LR.PA","ACA.PA","AVGO","ALV.DE","NOK","ENEL.MI","AIR.PA","URW.PA","SIE.DE","ERF.PA","JNJ","KER.PA","AZN","FR.PA","ENI.MI","NVDA","GTT.PA","SCR.PA","LI.PA","DG.PA","IFX.DE","CS.PA","IBM","JPM","ENX.PA","BMW.DE","BN.PA","ALO.PA","VOW3.DE","MUV2.DE","CSCO","EL.PA","ABI.BR","ITX.MC","MBG.DE","DIM.PA","AMGN","AD.AS","AXP","MMM","VIE.PA","WMT","BA","NFLX","OR.PA","BIM.PA","TRV","BAS.DE","TTE","CA.PA","AC.PA","AI.PA","GET.PA","SGO.PA","MSFT","DB1.DE","ADP.PA","META","KO","TSLA","V","SU.PA","AAPL","ISRG","DTE.DE","ADYEN.AS","MRK","MCD","CVX","AMZN","BVI.PA","STM","RMS.PA","DIS","LIN","VZ","CAP.PA","GFC.PA","ML.PA","SAN.PA","SAP.DE","PUB.PA","PEP","COST","TMUS","HD","RACE","HON","PG","RNO.PA","NKE","TEP.PA","STLA","ADS.DE","DSY.PA","AKE.PA","CRM","RI.PA","EDEN.PA","UNH","WKL.AS","SW.PA""MU", "SNDK", "TEP.PA", "ALSTI.PA", "NVDA", "GOOG", "AMZN", "META", "BNP.PA", "CRM", "ADBE", "AMD", "QCOM"]
 
-TICKERS = ["MU", "SNDK", "TEP.PA", "ALSTI.PA", "NVDA", "GOOG", "AMZN", "META", "BNP.PA", "CRM", "ADBE", "AMD", "QCOM"]
+# TICKERS = ["MU", "SNDK", "TEP.PA", "ALSTI.PA", "NVDA", "GOOG", "AMZN", "META", "BNP.PA", "CRM", "ADBE", "AMD", "QCOM"]
 # TICKERS = ["BA","LMT","RTX","NOC","GD","LHX","AVAV","AIR","BAESY","CAE","TXT","KTOS","ONDS","RCAT","PARRO","EH","FLT","ESLT","NXSN"]
-
+TICKERS = ["AMUN.PA", "BNP.PA", "TEP.PA", "ALSTI.PA"]
 
 BASE_DIR = Path(__file__).resolve().parent
-FILENAME = BASE_DIR / "Holden_Model_MU.xlsx"
+FILENAME = BASE_DIR / "Holden_Model_Test.xlsx"
 
 USER_AGENT = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
@@ -435,8 +435,74 @@ def get_data(ticker):
     else:
         de_ratio = -1.0 # Use -1 to denote missing
         
-    roe = info.get('returnOnEquity', 0.0)
-    if roe is None: roe = 0.0
+    # --- Dividend Yield & Ex-Date (Replacing ROE) ---
+    div_yield = 0.0
+    div_ex_date = "N/A"
+    
+    try:
+        divs = stock.dividends
+        info_div_rate = info.get('dividendRate', 0.0)
+        info_ex_date = info.get('exDividendDate')
+        
+        # 1. Selection: Next vs Last Ex-Date
+        cal = stock.calendar
+        next_ex = cal.get('Ex-Dividend Date') if cal else None
+        
+        today = datetime.date.today()
+        is_next_declared = False
+        
+        if next_ex and isinstance(next_ex, datetime.date) and next_ex >= today:
+            div_ex_date = next_ex.strftime('%Y-%m-%d')
+            is_next_declared = True
+        elif info_ex_date:
+            try:
+                dt_ex = datetime.date.fromtimestamp(info_ex_date)
+                if dt_ex >= today:
+                    div_ex_date = dt_ex.strftime('%Y-%m-%d')
+                    is_next_declared = True
+                else:
+                    div_ex_date = dt_ex.strftime('%Y-%m-%d')
+            except:
+                pass
+        
+        if div_ex_date == "N/A" and not divs.empty:
+            div_ex_date = divs.index[-1].strftime('%Y-%m-%d')
+
+        # 2. Annualization Logic (Strict Trailing/Forward Summing)
+        if not divs.empty:
+            # Detect Frequency (count in last 13 months)
+            divs_naive = divs.copy()
+            divs_naive.index = divs_naive.index.tz_localize(None)
+            thirteen_mo_ago = pd.Timestamp.now() - pd.DateOffset(months=13)
+            recent_divs = divs_naive[divs_naive.index >= thirteen_mo_ago]
+            raw_freq = len(recent_divs)
+            
+            # Map to discrete categories
+            if raw_freq >= 4: freq = 4
+            elif raw_freq >= 2: freq = 2
+            else: freq = 1
+            
+            # Identify Next amount if declared (via info['lastDividendValue'])
+            # falling back to latest historical if no next is known
+            next_amt = info.get('lastDividendValue', divs.iloc[-1])
+            
+            if is_next_declared:
+                # Next known + (Freq - 1) most recent historical payments
+                # This "swaps" out the oldest for the newest declared without multipliers
+                annual_sum = next_amt + divs.tail(freq - 1).sum() if freq > 1 else next_amt
+            else:
+                # Grounded Reality: Sum the last F actually paid dividends
+                annual_sum = divs.tail(freq).sum()
+            
+            div_yield = annual_sum / curr_price if curr_price > 0 else 0.0
+            
+            div_yield = annual_sum / curr_price if curr_price > 0 else 0.0
+        elif info_div_rate:
+            # Fallback if no history but Rate exists
+            div_yield = info_div_rate / curr_price if curr_price > 0 else 0.0
+
+    except Exception as e:
+        print(f"  [{clean_ticker}] Dividend calculation failed: {e}")
 
     return {
         'ticker': clean_ticker, 'company_name': company_name, 'market_cap': market_cap,
@@ -454,7 +520,8 @@ def get_data(ticker):
         'perf_1y': perf_1y, 'eps_trend_1y': eps_trend_1y, 'pe_trend_1y': pe_trend_1y,
         'implied_fwd_growth': implied_fwd_growth, 'fcr': fcr, 'erg_plus': erg_plus,
         'regime': regime, 'regime_signal': regime_signal,
-        'profit_margin': profit_margin, 'fcf_yield': fcf_yield, 'de_ratio': de_ratio, 'roe': roe
+        'profit_margin': profit_margin, 'fcf_yield': fcf_yield, 'de_ratio': de_ratio,
+        'div_yield': div_yield, 'div_ex_date': div_ex_date
     }
 
 # Copyright (c) 2026 Dylan H Wilding. All rights reserved.
@@ -680,11 +747,12 @@ if __name__ == "__main__":
         ref_regime = get_ref(34)
         ref_regime_signal = get_ref(35)
         
-        # Quality & Risk mapping (Columns 36, 37, 38, 39)
+        # Quality & Risk mapping (Columns 36, 37, 38, 39, 40)
         ref_profit_margin = get_ref(36)
         ref_fcf_yield = get_ref(37)
         ref_de_ratio = get_ref(38)
-        ref_roe = get_ref(39)
+        ref_div_yield = get_ref(39)
+        ref_div_ex_date = get_ref(40)
 
         dash_row, dash_col = 2, 15
         lists = {'Growth': 'Inputs!$A$2:$A$3', 'EPS': 'Inputs!$B$2:$B$3', 'PE': 'Inputs!$C$2:$C$4',
@@ -937,16 +1005,22 @@ if __name__ == "__main__":
         sheet.conditional_format(cell_de, {'type': 'cell', 'criteria': 'between', 'minimum': 2.0, 'maximum': 3.999, 'format': fmt['tier_de_red']})
         sheet.conditional_format(cell_de, {'type': 'cell', 'criteria': '>=', 'value': 4.0, 'format': fmt['tier_de_black']})
         
-        # Return on Equity (ROE)
+        # Dividend Yield
         r += 1
-        sheet.write(r, stats_col, "Return on Equity (ROE)", fmt['stat_label'])
-        sheet.write_formula(r, stats_col + 1, f'={ref_roe}', fmt['stat_val_score'])
-        cell_roe = xl_rowcol_to_cell(r, stats_col + 1)
-        sheet.conditional_format(cell_roe, {'type': 'cell', 'criteria': '>=', 'value': 0.25, 'format': fmt['tier_dkgreen']})
-        sheet.conditional_format(cell_roe, {'type': 'cell', 'criteria': 'between', 'minimum': 0.15, 'maximum': 0.2499, 'format': fmt['tier_green']})
-        sheet.conditional_format(cell_roe, {'type': 'cell', 'criteria': 'between', 'minimum': 0.08, 'maximum': 0.1499, 'format': fmt['tier_yellow']})
-        sheet.conditional_format(cell_roe, {'type': 'cell', 'criteria': 'between', 'minimum': 0.0, 'maximum': 0.0799, 'format': fmt['tier_red']})
-        sheet.conditional_format(cell_roe, {'type': 'cell', 'criteria': '<', 'value': 0.0, 'format': fmt['tier_black']})
+        sheet.write(r, stats_col, "Dividend Yield", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_div_yield}', fmt['stat_val_score'])
+        cell_div = xl_rowcol_to_cell(r, stats_col + 1)
+        # Use existing ROE styling logic for yield
+        sheet.conditional_format(cell_div, {'type': 'cell', 'criteria': '>=', 'value': 0.05, 'format': fmt['tier_dkgreen']})
+        sheet.conditional_format(cell_div, {'type': 'cell', 'criteria': 'between', 'minimum': 0.03, 'maximum': 0.0499, 'format': fmt['tier_green']})
+        sheet.conditional_format(cell_div, {'type': 'cell', 'criteria': 'between', 'minimum': 0.015, 'maximum': 0.0299, 'format': fmt['tier_yellow']})
+        sheet.conditional_format(cell_div, {'type': 'cell', 'criteria': 'between', 'minimum': 0.005, 'maximum': 0.0149, 'format': fmt['tier_red']})
+        sheet.conditional_format(cell_div, {'type': 'cell', 'criteria': '<', 'value': 0.005, 'format': fmt['tier_black']})
+        
+        # Dividend Ex Date
+        r += 1
+        sheet.write(r, stats_col, "Dividend Ex Date", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_div_ex_date}', fmt['stat_val_txt'])
 
         r += 2
         sheet.write(r, stats_col, "Valuation Logic", fmt['stat_subhead'])
@@ -1103,7 +1177,7 @@ if __name__ == "__main__":
         "Conviction Score (0-10)", "Growth Diagnosis",
         "1Y Perf", "1Y EPS \u0394", "1Y P/E \u0394", "1Y ERG Score",
         "Impl. FWD Growth", "FCR", "ERG+", "Regime", "Signal",
-        "Net Profit Margin", "FCF Yield", "Debt/Equity", "ROE"
+        "Net Profit Margin", "FCF Yield", "Debt/Equity", "Div. Yield", "Ex Date"
     ]
     ws_comp.write_row(0, 0, cols, fmt_comp_h)
     comp_data = []
@@ -1173,7 +1247,7 @@ if __name__ == "__main__":
                           holden_score, cushion, resilience, insider, insider_count, avg_stake / 100, conviction_score,
                           growth_diag, perf_1y, eps_trend_1y, pe_trend_1y, erg_score,
                           implied_fwd_g, fcr_val, erg_plus_val, regime_val, signal_val,
-                          d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['roe']])
+                          d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['div_yield'], d['div_ex_date']])
 
     for i, row in enumerate(comp_data):
         ws_comp.write(i + 1, 0, row[0], fmt['comp_ticker'])
@@ -1214,6 +1288,7 @@ if __name__ == "__main__":
         else:
             ws_comp.write(i + 1, 29, val_de, fmt['comp_num'])
         ws_comp.write(i + 1, 30, row[30], fmt['comp_pct'])
+        ws_comp.write(i + 1, 31, row[31], fmt['comp_txt'])
 
     if comp_data:
         ws_comp.add_table(0, 0, len(comp_data), len(cols) - 1, {
@@ -1264,7 +1339,7 @@ if __name__ == "__main__":
                'EPS Low Nxt', 'EPS Mid Nxt', 'EPS High Nxt', 'Est Target FY Nxt', 'Unique Buyers Count',
                'Avg Stake Increase %', 'Perf 1Y', 'EPS Trend 1Y', 'PE Trend 1Y',
                'Implied FWD Growth', 'FCR', 'ERG+', 'Regime', 'Regime Signal',
-               'Profit Margin', 'FCF Yield', 'Debt to Equity', 'ROE']
+               'Profit Margin', 'FCF Yield', 'Debt to Equity', 'Div Yield', 'Ex Date']
 
     fmt_head = workbook.add_format({'bold': True, 'bottom': 1})
     ws_inputs.write_row(data_start_row, 0, headers, fmt_head)
@@ -1279,7 +1354,7 @@ if __name__ == "__main__":
                     d['est_year_str_nxt'], d['insider_buy_count'], d['insider_avg_stake_inc'],
                     d['perf_1y'], d['eps_trend_1y'], d['pe_trend_1y'],
                     d['implied_fwd_growth'], d['fcr'], d['erg_plus'], d['regime'], d['regime_signal'],
-                    d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['roe']]
+                    d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['div_yield'], d['div_ex_date']]
         ws_inputs.write_row(r, 0, row_data)
 
     writer.close()
