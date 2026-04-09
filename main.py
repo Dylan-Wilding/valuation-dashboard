@@ -15,8 +15,8 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 import argparse
 
-# --- CONFIGURATION ---
-TICKERS = ["AMUN.PA", "BNP.PA", "TEP.PA", "ALSTI.PA", "BNJ.AS", "ALBLD.PA", "EL.PA", "NVDA", "MU", "SNDK", "META", "GOOG", "AMZN", "MSFT", "NOW", "CRM", "ADBE", "WDAY", "INTU", "GLW"]
+# CONFIGURATION 
+TICKERS = ["AL.PA", "AMUN.PA", "BNP.PA", "TEP.PA", "ALSTI.PA", "BNJ.AS", "ALBLD.PA", "EL.PA", "NVDA", "MU", "SNDK", "META", "GOOG", "AMZN", "MSFT", "NOW", "CRM", "ADBE", "WDAY", "INTU", "GLW"]
 
 BASE_DIR = Path(__file__).resolve().parent
 FILENAME = BASE_DIR / "Holden_Model_Pf.xlsx"
@@ -24,7 +24,7 @@ FILENAME = BASE_DIR / "Holden_Model_Pf.xlsx"
 USER_AGENT = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
 
-# --- MODEL TUNING CONSTANTS ---
+# MODEL TUNING CONSTANTS ---
 # Insider Conviction Scoring Thresholds, based on the existing academic literature.
 INSIDER_DOLLAR_LARGE = 1_000_000
 INSIDER_PCT_LARGE = 0.0002
