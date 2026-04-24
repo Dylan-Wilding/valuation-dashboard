@@ -1,8 +1,24 @@
+# =============================================================================
+# Holden Valuation Model
+# Copyright (c) 2026 Dylan H Wilding. All rights reserved.
+#
+# PROPRIETARY AND CONFIDENTIAL — This source code, its algorithms, scoring
+# methodologies, and all associated outputs are the exclusive intellectual
+# property of Dylan H Wilding. Unauthorized copying, distribution,
+# modification, reverse-engineering, or commercial use of this file, in
+# whole or in part, is strictly prohibited without prior written consent.
+#
+# Any use of this model by third parties (including but not limited to
+# investment clubs, partnerships, or firms) constitutes a limited,
+# non-exclusive, revocable license granted at the sole discretion of the
+# author. Such use does not transfer ownership or intellectual property
+# rights of any kind.
+# =============================================================================
+#
 # Date: 2026-03-14
 # Author: Dylan H WILDING
 # LLMs used : Gemini 3.1 Pro, Claude Sonnet 4.6
 # Objective: EPS/PE estimates dashboard, scenario analysis, insider buying
-# Project: Holden Valuation Model
 
 import pandas as pd
 import numpy as np
@@ -15,16 +31,33 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 import argparse
 
-# CONFIGURATION 
-TICKERS = ["AL.PA", "AMUN.PA", "BNP.PA", "TEP.PA", "ALSTI.PA", "BNJ.AS", "ALBLD.PA", "EL.PA", "NVDA", "MU", "SNDK", "META", "GOOG", "AMZN", "MSFT", "NOW", "CRM", "ADBE", "WDAY", "INTU", "GLW"]
+# --- CONFIGURATION ---
+
+TICKERS = ["NVDA", "AMZN", "GOOG", "META", "TEP.PA", "BNP.PA", "CRM", "MU", "TEAM", "APP", "ADBE", "WDAY", "INTU", "TXN"]
+
+""" TICKERS = [
+    "AA", "AAPL", "ACN", "AFRM", "AERO", "AMZN", "AMD", "APGA", "AR", 
+    "ASML", "AVGO", "AXP", "AXTI", "BABA", "BA", "BAC", "BE", "BFAM", 
+    "BILL", "BITW", "BK", "BKV", "BLK", "BRKBB", "BRKRP", "BSX", "CCC", 
+    "CEG", "CLH", "CMG", "CNDT", "COF", "COYA", "CPNG", "CRM", "CROX", 
+    "CRS", "CYBR", "DASH", "DAY", "DECK", "DIS", "DKNG", "DKS", "DOCS", 
+    "ESTC", "EWY", "FICO", "FIS", "FISV", "FLUT", "GOOG", "GOOGL", "GPK", 
+    "GPN", "HSIC", "HUTH", "IAC", "JELD", "JPM", "KBR", "KKR", "LEN", 
+    "LSC", "LYV", "MA", "MCO", "MDLN", "META", "MOH", "MSFT", "MU", "NGD", 
+    "NVDA", "NVTS", "NYT", "ODD", "PINS", "PONY", "PYPL", "RSP", "SCHW", 
+    "SE", "SLM", "SNPS", "SOLS", "SPB", "SPOT", "SPY", "STLA", "TDY", 
+    "TEAM", "THC", "THRY", "TMO", "TSM", "TV", "TWFG", "UBER", "UNH", 
+    "V", "VMC", "WBD", "WING", "WULF", "WYNN", "Z", "ZG"
+]"""
+
 
 BASE_DIR = Path(__file__).resolve().parent
-FILENAME = BASE_DIR / "Holden_Model_Pf.xlsx"
+FILENAME = BASE_DIR / "Dashboard.xlsx"
 
 USER_AGENT = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
 
-# MODEL TUNING CONSTANTS ---
+# --- MODEL TUNING CONSTANTS ---
 # Insider Conviction Scoring Thresholds, based on the existing academic literature.
 INSIDER_DOLLAR_LARGE = 1_000_000
 INSIDER_PCT_LARGE = 0.0002
@@ -263,6 +296,24 @@ def get_data(ticker):
     eps_mid_nxt, eps_high_nxt, eps_low_nxt = 0, 0, 0
     base_eps = eps_street_ttm if eps_street_ttm > 0 else eps_basic_ttm
 
+    # --- EPS Trend (90d): % change from 90-day-ago consensus to current ---
+    eps_90d_change = 0.0
+    try:
+        eps_trend_df = stock.eps_trend
+        if eps_trend_df is not None and not eps_trend_df.empty:
+            # yfinance eps_trend: index = fiscal period ('0y', '1y'), columns = time offsets ('current', '90daysAgo', ...)
+            period = '0y' if '0y' in eps_trend_df.index else ('1y' if '1y' in eps_trend_df.index else None)
+            if period and 'current' in eps_trend_df.columns and '90daysAgo' in eps_trend_df.columns:
+                current_est = eps_trend_df.loc[period, 'current']
+                ago_90d_est = eps_trend_df.loc[period, '90daysAgo']
+                if pd.notna(current_est) and pd.notna(ago_90d_est) and float(ago_90d_est) != 0:
+                    eps_90d_change = (float(current_est) - float(ago_90d_est)) / abs(float(ago_90d_est))
+                    print(f"  [{clean_ticker}] EPS Trend 90d: {ago_90d_est:.2f} -> {current_est:.2f} = {eps_90d_change:+.1%}")
+            else:
+                print(f"  [{clean_ticker}] eps_trend shape={eps_trend_df.shape} index={list(eps_trend_df.index)} cols={list(eps_trend_df.columns)}")
+    except Exception as e:
+        print(f"  [{clean_ticker}] EPS trend 90d fetch failed: {e}")
+
     try:
         est = stock.earnings_estimate
         if est is not None and '0y' in est.index:
@@ -490,6 +541,42 @@ def get_data(ticker):
     except Exception as e:
         print(f"  [{clean_ticker}] Dividend calculation failed: {e}")
 
+    # --- Analyst Price Target (12M Consensus) ---
+    analyst_target_mean = 0.0
+    analyst_target_median = 0.0
+    analyst_target_low = 0.0
+    analyst_target_high = 0.0
+    analyst_target_upside = 0.0
+    multiple_expansion_signal = 0.0
+    analyst_target_count = 0
+
+    try:
+        apt = stock.analyst_price_targets
+        if apt and isinstance(apt, dict):
+            analyst_target_mean = apt.get('mean', 0.0) or 0.0
+            analyst_target_median = apt.get('median', 0.0) or 0.0
+            analyst_target_low = apt.get('low', 0.0) or 0.0
+            analyst_target_high = apt.get('high', 0.0) or 0.0
+            # Use numberOfAnalystOpinions from info as the target count
+            analyst_target_count = info.get('numberOfAnalystOpinions', 0) or 0
+            if analyst_target_mean > 0 and curr_price > 0:
+                analyst_target_upside = (analyst_target_mean / curr_price) - 1
+            # Multiple Expansion Signal via multiplicative decomposition:
+            # (1 + price_return) = (1 + eps_growth) × (1 + multiple_change)
+            # So: multiple_change = (1 + analyst_upside) / (1 + eps_growth) - 1
+            # This correctly handles high-growth stocks where additive would distort.
+            if (1 + implied_fwd_growth) != 0:
+                multiple_expansion_signal = (1 + analyst_target_upside) / (1 + implied_fwd_growth) - 1
+            else:
+                multiple_expansion_signal = analyst_target_upside
+            print(f"  [{clean_ticker}] Analyst 12M Target: {currency_symbol}{analyst_target_mean:.2f} "
+                  f"(Upside: {analyst_target_upside:+.1%}, Mult.Exp: {multiple_expansion_signal:+.1%}, "
+                  f"Coverage: {analyst_target_count} analysts)")
+        else:
+            print(f"  [{clean_ticker}] No analyst price target data available.")
+    except Exception as e:
+        print(f"  [{clean_ticker}] Analyst price target fetch failed: {e}")
+
     return {
         'ticker': clean_ticker, 'company_name': company_name, 'market_cap': market_cap,
         'currency': currency_symbol, 'price': curr_price,
@@ -507,20 +594,16 @@ def get_data(ticker):
         'implied_fwd_growth': implied_fwd_growth, 'fcr': fcr, 'erg_plus': erg_plus,
         'regime': regime, 'regime_signal': regime_signal,
         'profit_margin': profit_margin, 'fcf_yield': fcf_yield, 'de_ratio': de_ratio,
-        'div_yield': div_yield, 'div_ex_date': div_ex_date
+        'div_yield': div_yield, 'div_ex_date': div_ex_date,
+        'analyst_target_mean': analyst_target_mean, 'analyst_target_median': analyst_target_median,
+        'analyst_target_low': analyst_target_low, 'analyst_target_high': analyst_target_high,
+        'analyst_target_upside': analyst_target_upside,
+        'multiple_expansion_signal': multiple_expansion_signal,
+        'analyst_target_count': analyst_target_count,
+        'eps_90d_change': eps_90d_change
     }
 
-# Copyright (c) 2026 Dylan H Wilding. All rights reserved.
-#
-# This source code and the Holden Valuation Model are proprietary and confidential.
-# Unauthorized copying, distribution, modification, reverse engineering, or use of
-# this file, in whole or in part, is prohibited without prior written permission
-# from Dylan H Wilding.
-#
-# This model is provided for informational and research purposes only and does not
-# constitute investment, legal, tax, or accounting advice. No warranty is provided
-# as to the accuracy, completeness, or fitness for any particular purpose of the
-# data, calculations, forecasts, or outputs generated by this model. Use at your own risk.
+# (See copyright notice at top of file)
 
 # --- FORMATTING ---
 def get_formats(workbook, symbol):
@@ -632,6 +715,360 @@ def get_formats(workbook, symbol):
     }
 
 
+# --- ANALYTICS DASHBOARD ---
+ANALYTICS_MIN_STOCKS = 50
+
+def build_analytics_dashboard(workbook, comp_data, col_headers):
+    """Build an Analytics Dashboard sheet with charts, tables, and rankings.
+    Only called when universe size >= ANALYTICS_MIN_STOCKS.
+    """
+    df = pd.DataFrame(comp_data, columns=col_headers)
+    for col in ['Market Cap', 'Price', 'Target Price', 'Implied Upside',
+                'Current P/E (Adj)', 'Forward P/E', 'PEG Ratio', 'Holden Score',
+                'Safety Cushion', 'Resilience Ratio', 'Insider Net L6M ($)',
+                'Unique Buyers', 'Avg Stake Inc (%)', 'Conviction Score (0-10)',
+                '1Y Perf', '1Y ERG Score', 'Impl. FWD Growth', 'FCR', 'ERG+',
+                'Net Profit Margin', 'FCF Yield', 'Debt/Equity', 'Div. Yield']:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+    df['PEG Ratio'] = df['PEG Ratio'].clip(upper=10)
+    df.loc[df['Debt/Equity'] < 0, 'Debt/Equity'] = np.nan
+
+    ws = workbook.add_worksheet('Analytics')
+    ws.hide_gridlines(2)
+    ws.set_tab_color('#2F5496')
+    n = len(df)
+
+    # --- Dashboard formats ---
+    B = {'font_name': 'Arial', 'font_size': 10, 'align': 'center', 'valign': 'vcenter'}
+    def F(p): return workbook.add_format({**B, **p})
+
+    f_title = F({'bold': True, 'font_size': 14, 'font_color': 'white',
+                 'bg_color': '#1F3864', 'align': 'left'})
+    f_kl = F({'font_size': 8, 'font_color': '#8B8B8B', 'bg_color': '#F2F2F2', 'top': 1})
+    f_ki = F({'bold': True, 'font_size': 18, 'font_color': '#1F3864',
+              'bg_color': '#F2F2F2', 'bottom': 2, 'bottom_color': '#4472C4'})
+    f_kp = F({'bold': True, 'font_size': 18, 'font_color': '#1F3864',
+              'num_format': '0.0%', 'bg_color': '#F2F2F2',
+              'bottom': 2, 'bottom_color': '#4472C4'})
+    f_kd = F({'bold': True, 'font_size': 18, 'font_color': '#1F3864',
+              'num_format': '0.0', 'bg_color': '#F2F2F2',
+              'bottom': 2, 'bottom_color': '#4472C4'})
+    f_sec = F({'bold': True, 'font_size': 12, 'font_color': 'white',
+               'bg_color': '#2F5496', 'align': 'left', 'border': 1})
+    f_th = F({'bold': True, 'bg_color': '#D6DCE4', 'border': 1, 'font_size': 9})
+    f_td = F({'border': 1, 'font_size': 9, 'bg_color': '#F2F2F2', 'align': 'left'})
+    f_ti = F({'border': 1, 'font_size': 9, 'bg_color': '#F2F2F2', 'num_format': '0'})
+    f_tp = F({'border': 1, 'font_size': 9, 'bg_color': '#F2F2F2', 'num_format': '0.0%'})
+    f_tn = F({'border': 1, 'font_size': 9, 'bg_color': '#F2F2F2', 'num_format': '0.00'})
+    f_tx = F({'border': 1, 'font_size': 9, 'bg_color': '#F2F2F2', 'num_format': '0.0x'})
+    f_rh = F({'bold': True, 'bg_color': '#2F5496', 'font_color': 'white',
+              'border': 1, 'font_size': 9})
+    f_r = F({'border': 1, 'font_size': 9, 'align': 'left'})
+    f_rp = F({'border': 1, 'font_size': 9, 'num_format': '0.0%'})
+    f_rn = F({'border': 1, 'font_size': 9, 'num_format': '0.00'})
+    f_rx = F({'border': 1, 'font_size': 9, 'num_format': '0.0x'})
+    f_ri = F({'border': 1, 'font_size': 9, 'num_format': '0'})
+    f_rd = F({'border': 1, 'font_size': 9, 'num_format': '"$"#,##0'})
+
+    # === TITLE ===
+    ws.merge_range(0, 0, 0, 18,
+        f'  HOLDEN ANALYTICS DASHBOARD  -  {n} Stocks  -  '
+        f'{datetime.date.today().strftime("%Y-%m-%d")}', f_title)
+
+    # === KPI CARDS ===
+    for i, (lbl, val, vf) in enumerate([
+        ('Universe', n, f_ki),
+        ('Med. Upside', df['Implied Upside'].median(), f_kp),
+        ('Med. Fwd P/E', df['Forward P/E'].median(), f_kd),
+        ('Med. PEG', df['PEG Ratio'].median(), f_kd),
+        ('% Golden Gap', (df['Regime'] == 'Golden Gap').mean(), f_kp),
+        ('% Avoid', df['Signal'].str.contains('Avoid', na=False).mean(), f_kp),
+        ('Med. Conviction', df['Conviction Score (0-10)'].median(), f_kd),
+    ]):
+        c = i * 2
+        ws.merge_range(2, c, 2, c + 1, lbl, f_kl)
+        ws.merge_range(3, c, 3, c + 1, val, vf)
+
+    # === Helper: write summary table ===
+    def write_table(start_row, title, title_span, headers, data, col_fmts):
+        ws.merge_range(start_row, 0, start_row, title_span, f'  {title}', f_sec)
+        hr = start_row + 1
+        for j, h in enumerate(headers):
+            ws.write(hr, j, h, f_th)
+        for i, row_vals in enumerate(data):
+            for j, val in enumerate(row_vals):
+                ws.write(hr + 1 + i, j, val, col_fmts[j])
+        return hr + len(data)
+
+    # === Helper: write ranking table ===
+    def write_ranking(start_row, col_start, title, headers, rows, fmts):
+        span = len(headers) - 1
+        ws.merge_range(start_row, col_start, start_row, col_start + span, title, f_rh)
+        for j, h in enumerate(headers):
+            ws.write(start_row + 1, col_start + j, h, f_th)
+        for i, vals in enumerate(rows):
+            for j, v in enumerate(vals):
+                ws.write(start_row + 2 + i, col_start + j, v, fmts[j])
+
+    # === SECTOR ANALYSIS ===
+    s = 5
+    sec = df.groupby('Sector').agg(
+        Count=('Ticker', 'count'), FPE=('Forward P/E', 'median'),
+        PEG=('PEG Ratio', 'median'), Up=('Implied Upside', 'median'),
+        Hld=('Holden Score', 'median'), Conv=('Conviction Score (0-10)', 'median'),
+        Mgn=('Net Profit Margin', 'median'), FCF=('FCF Yield', 'median'),
+    ).sort_values('Count', ascending=False).reset_index()
+    sec_data = [[r.Sector, r.Count, r.FPE, r.PEG, r.Up, r.Hld, r.Conv, r.Mgn, r.FCF]
+                for _, r in sec.iterrows()]
+    se = write_table(s, 'SECTOR ANALYSIS', 8,
+        ['Sector', 'Count', 'Med. Fwd P/E', 'Med. PEG', 'Med. Upside',
+         'Med. Holden', 'Med. Conv.', 'Med. Margin', 'Med. FCF'],
+        sec_data, [f_td, f_ti, f_tx, f_tn, f_tp, f_tp, f_ti, f_tp, f_tp])
+    shr = s + 1
+
+    c1 = workbook.add_chart({'type': 'column'})
+    c1.add_series({'name': 'Fwd P/E', 'categories': ['Analytics', shr+1, 0, se, 0],
+                   'values': ['Analytics', shr+1, 2, se, 2], 'fill': {'color': '#4472C4'}})
+    c1.add_series({'name': 'PEG', 'categories': ['Analytics', shr+1, 0, se, 0],
+                   'values': ['Analytics', shr+1, 3, se, 3], 'fill': {'color': '#ED7D31'},
+                   'y2_axis': True})
+    c1.set_title({'name': 'Valuation by Sector', 'name_font': {'size': 10, 'bold': True}})
+    c1.set_x_axis({'num_font': {'rotation': -45, 'size': 7}})
+    c1.set_y_axis({'name': 'Fwd P/E', 'num_format': '0.0x', 'name_font': {'size': 8}})
+    c1.set_y2_axis({'name': 'PEG', 'num_format': '0.0', 'name_font': {'size': 8}})
+    c1.set_size({'width': 560, 'height': 340})
+    c1.set_legend({'position': 'bottom', 'font': {'size': 8}})
+    c1.set_style(10)
+    ws.insert_chart(s, 10, c1)
+
+    c2 = workbook.add_chart({'type': 'column'})
+    c2.add_series({'name': 'Upside', 'categories': ['Analytics', shr+1, 0, se, 0],
+                   'values': ['Analytics', shr+1, 4, se, 4], 'fill': {'color': '#70AD47'}})
+    c2.add_series({'name': 'Holden', 'categories': ['Analytics', shr+1, 0, se, 0],
+                   'values': ['Analytics', shr+1, 5, se, 5], 'fill': {'color': '#FFC000'}})
+    c2.set_title({'name': 'Opportunity by Sector', 'name_font': {'size': 10, 'bold': True}})
+    c2.set_x_axis({'num_font': {'rotation': -45, 'size': 7}})
+    c2.set_y_axis({'name': '%', 'num_format': '0%', 'name_font': {'size': 8}})
+    c2.set_size({'width': 560, 'height': 340})
+    c2.set_legend({'position': 'bottom', 'font': {'size': 8}})
+    c2.set_style(10)
+    ws.insert_chart(s, 18, c2)
+
+    # === REGION ANALYSIS ===
+    rg = se + 2
+    df['_gg'] = (df['Regime'] == 'Golden Gap').astype(int)
+    reg = df.groupby('Region').agg(
+        Count=('Ticker', 'count'), FPE=('Forward P/E', 'median'),
+        PEG=('PEG Ratio', 'median'), Up=('Implied Upside', 'median'),
+        GG=('_gg', 'mean'), Conv=('Conviction Score (0-10)', 'median'),
+        Mgn=('Net Profit Margin', 'median'),
+    ).sort_values('Count', ascending=False).reset_index()
+    reg_data = [[r.Region, r.Count, r.FPE, r.PEG, r.Up, r.GG, r.Conv, r.Mgn]
+                for _, r in reg.iterrows()]
+    re_end = write_table(rg, 'REGION ANALYSIS', 7,
+        ['Region', 'Count', 'Med. Fwd P/E', 'Med. PEG', 'Med. Upside',
+         '% Golden Gap', 'Med. Conv.', 'Med. Margin'],
+        reg_data, [f_td, f_ti, f_tx, f_tn, f_tp, f_tp, f_ti, f_tp])
+    rhr = rg + 1
+
+    c3 = workbook.add_chart({'type': 'column'})
+    c3.add_series({'name': 'Fwd P/E', 'categories': ['Analytics', rhr+1, 0, re_end, 0],
+                   'values': ['Analytics', rhr+1, 2, re_end, 2], 'fill': {'color': '#4472C4'}})
+    c3.add_series({'name': 'Upside', 'categories': ['Analytics', rhr+1, 0, re_end, 0],
+                   'values': ['Analytics', rhr+1, 4, re_end, 4], 'fill': {'color': '#70AD47'},
+                   'y2_axis': True})
+    c3.set_title({'name': 'Region Overview', 'name_font': {'size': 10, 'bold': True}})
+    c3.set_y_axis({'name': 'Fwd P/E', 'num_format': '0.0x', 'name_font': {'size': 8}})
+    c3.set_y2_axis({'name': 'Upside', 'num_format': '0%', 'name_font': {'size': 8}})
+    c3.set_size({'width': 560, 'height': 300})
+    c3.set_legend({'position': 'bottom', 'font': {'size': 8}})
+    c3.set_style(10)
+    ws.insert_chart(rg, 10, c3)
+
+    # === REGIME DISTRIBUTION ===
+    rm = re_end + 2
+    rgm = df.groupby('Regime').agg(
+        Count=('Ticker', 'count'), Up=('Implied Upside', 'median'),
+        ERG=('ERG+', 'median'),
+    ).reset_index()
+    rgm['Pct'] = rgm['Count'] / n
+    rgm = rgm.sort_values('Count', ascending=False).reset_index(drop=True)
+    rgm_data = [[r.Regime, r.Count, r.Pct, r.Up, r.ERG] for _, r in rgm.iterrows()]
+    rme = write_table(rm, 'REGIME DISTRIBUTION', 4,
+        ['Regime', 'Count', '% of Univ.', 'Med. Upside', 'Med. ERG+'],
+        rgm_data, [f_td, f_ti, f_tp, f_tp, f_tp])
+    rmr = rm + 1
+
+    pal = ['#70AD47', '#4472C4', '#FFC000', '#ED7D31', '#FF4444', '#9B59B6',
+           '#1ABC9C', '#E74C3C', '#3498DB', '#F39C12', '#2ECC71', '#E67E22']
+    c4 = workbook.add_chart({'type': 'doughnut'})
+    c4.add_series({
+        'name': 'Regime', 'categories': ['Analytics', rmr+1, 0, rme, 0],
+        'values': ['Analytics', rmr+1, 1, rme, 1],
+        'data_labels': {'percentage': True, 'category': True, 'separator': '\n',
+                        'font': {'size': 7}},
+        'points': [{'fill': {'color': pal[i % len(pal)]}} for i in range(len(rgm))],
+    })
+    c4.set_title({'name': 'Regime Mix', 'name_font': {'size': 10, 'bold': True}})
+    c4.set_size({'width': 520, 'height': 380})
+    c4.set_legend({'position': 'left', 'font': {'size': 7}})
+    ws.insert_chart(rm, 10, c4)
+
+    # === SCATTER PLOTS ===
+    sc = max(rme + 2, rm + 22)
+    ws.merge_range(sc, 0, sc, 25, '  VALUE DISCOVERY - Scatter Analysis', f_sec)
+    clr = n  # Comparison sheet last data row (1-indexed)
+    # Column indices in the Comparison sheet (Region appended at end, no shift)
+    # PEG=9, Upside=6, Conviction=16, FwdPE=8, ERG+=24
+    for cfg in [
+        {'name': 'PEG vs Upside', 'xc': 9, 'yc': 6, 'xt': 'PEG Ratio',
+         'yt': 'Implied Upside', 'xf': '0.0', 'yf': '0%',
+         'mk': 'circle', 'cl': '#4472C4', 'bc': '#2F5496',
+         'xmin': 0, 'xmax': 5, 'col_off': 0},
+        {'name': 'Conviction vs Upside', 'xc': 16, 'yc': 6,
+         'xt': 'Conviction (0-10)', 'yt': 'Implied Upside', 'xf': '0', 'yf': '0%',
+         'mk': 'diamond', 'cl': '#70AD47', 'bc': '#375623',
+         'xmin': None, 'xmax': None, 'col_off': 9},
+        {'name': 'Fwd P/E vs ERG+', 'xc': 8, 'yc': 24, 'xt': 'Fwd P/E',
+         'yt': 'ERG+', 'xf': '0.0x', 'yf': '0%',
+         'mk': 'triangle', 'cl': '#ED7D31', 'bc': '#C55A11',
+         'xmin': 0, 'xmax': 60, 'col_off': 18},
+    ]:
+        ch = workbook.add_chart({'type': 'scatter'})
+        ch.add_series({
+            'name': cfg['name'],
+            'categories': ['Comparison', 1, cfg['xc'], clr, cfg['xc']],
+            'values': ['Comparison', 1, cfg['yc'], clr, cfg['yc']],
+            'marker': {'type': cfg['mk'], 'size': 4,
+                       'fill': {'color': cfg['cl']}, 'border': {'color': cfg['bc']}},
+        })
+        ch.set_title({'name': cfg['name'], 'name_font': {'size': 10}})
+        xa = {'name': cfg['xt'], 'num_format': cfg['xf']}
+        if cfg['xmin'] is not None: xa['min'] = cfg['xmin']
+        if cfg['xmax'] is not None: xa['max'] = cfg['xmax']
+        ch.set_x_axis(xa)
+        ch.set_y_axis({'name': cfg['yt'], 'num_format': cfg['yf']})
+        ch.set_size({'width': 460, 'height': 340})
+        ch.set_legend({'none': True})
+        ch.set_style(11)
+        ws.insert_chart(sc + 1, cfg['col_off'], ch)
+
+    # === DISTRIBUTION ANALYSIS ===
+    ds = sc + 22
+    ws.merge_range(ds, 0, ds, 25, '  DISTRIBUTION ANALYSIS', f_sec)
+    dr = ds + 1
+    for offset, col_name, bins, fill_color in [
+        (0, 'Implied Upside',
+         [(-999, -0.20, '<-20%'), (-0.20, 0, '-20% to 0%'), (0, 0.20, '0% to 20%'),
+          (0.20, 0.50, '20% to 50%'), (0.50, 999, '>50%')], '#4472C4'),
+        (10, 'Forward P/E',
+         [(-999, 10, '<10x'), (10, 15, '10-15x'), (15, 20, '15-20x'),
+          (20, 30, '20-30x'), (30, 50, '30-50x'), (50, 999, '>50x')], '#ED7D31'),
+        (20, 'PEG Ratio',
+         [(0, 0.75, '<0.75'), (0.75, 1.0, '0.75-1.0'), (1.0, 1.5, '1.0-1.5'),
+          (1.5, 2.0, '1.5-2.0'), (2.0, 3.0, '2.0-3.0'), (3.0, 999, '>3.0')], '#70AD47'),
+    ]:
+        ws.write(dr, offset, col_name + ' Range', f_th)
+        ws.write(dr, offset + 1, 'Count', f_th)
+        for bi, (lo, hi, lbl) in enumerate(bins):
+            cnt = int(((df[col_name] > lo) & (df[col_name] <= hi)).sum())
+            ws.write(dr + 1 + bi, offset, lbl, f_td)
+            ws.write(dr + 1 + bi, offset + 1, cnt, f_ti)
+        de = dr + len(bins)
+        ch = workbook.add_chart({'type': 'column'})
+        ch.add_series({
+            'name': f'{col_name} Distribution',
+            'categories': ['Analytics', dr + 1, offset, de, offset],
+            'values': ['Analytics', dr + 1, offset + 1, de, offset + 1],
+            'fill': {'color': fill_color}, 'gap': 50,
+        })
+        ch.set_title({'name': f'{col_name} Distribution', 'name_font': {'size': 10}})
+        ch.set_y_axis({'name': '# Stocks'})
+        ch.set_size({'width': 420, 'height': 300})
+        ch.set_legend({'none': True})
+        ch.set_style(10)
+        ws.insert_chart(ds + 1, offset + 3, ch)
+
+    # === TOP / BOTTOM RANKINGS ===
+    tk = ds + 22
+    ws.merge_range(tk, 0, tk, 25, '  TOP / BOTTOM RANKINGS', f_sec)
+
+    # Top 10 Holden Score
+    t10 = df.nlargest(10, 'Holden Score')
+    t10_rows = [[i+1, r['Ticker'], r['Sector'], r['Holden Score'], r['Implied Upside'],
+                 r['PEG Ratio'], r['Forward P/E'], r['Conviction Score (0-10)']]
+                for i, (_, r) in enumerate(t10.iterrows())]
+    write_ranking(tk + 1, 0, 'Top 10 - Highest Holden Score',
+        ['#', 'Ticker', 'Sector', 'Holden', 'Upside', 'PEG', 'Fwd P/E', 'Conv.'],
+        t10_rows, [f_ri, f_r, f_r, f_rp, f_rp, f_rn, f_rx, f_ri])
+
+    # Top 10 Golden Gap
+    gg = df[df['Regime'] == 'Golden Gap'].nlargest(10, 'ERG+')
+    gg_rows = [[i+1, r['Ticker'], r['Sector'], r['ERG+'], r['Implied Upside'],
+                r['Forward P/E'], r['FCR'], r['Signal']]
+               for i, (_, r) in enumerate(gg.iterrows())]
+    write_ranking(tk + 1, 10, 'Top 10 - Golden Gap (by ERG+)',
+        ['#', 'Ticker', 'Sector', 'ERG+', 'Upside', 'Fwd P/E', 'FCR', 'Signal'],
+        gg_rows, [f_ri, f_r, f_r, f_rp, f_rp, f_rx, f_rn, f_r])
+
+    # Bottom 10 Upside
+    b10 = df.nsmallest(10, 'Implied Upside')
+    b10_rows = [[i+1, r['Ticker'], r['Sector'], r['Implied Upside'],
+                 r['Forward P/E'], r['PEG Ratio'], r['Regime'], r['Signal']]
+                for i, (_, r) in enumerate(b10.iterrows())]
+    write_ranking(tk + 14, 0, 'Bottom 10 - Most Overvalued',
+        ['#', 'Ticker', 'Sector', 'Upside', 'Fwd P/E', 'PEG', 'Regime', 'Signal'],
+        b10_rows, [f_ri, f_r, f_r, f_rp, f_rx, f_rn, f_r, f_r])
+
+    # Top 10 Conviction
+    cv10 = df.nlargest(10, 'Conviction Score (0-10)')
+    cv_rows = [[i+1, r['Ticker'], r['Sector'], r['Conviction Score (0-10)'],
+                r['Insider Net L6M ($)'], r['Unique Buyers'], r['Implied Upside'],
+                r['Signal']]
+               for i, (_, r) in enumerate(cv10.iterrows())]
+    write_ranking(tk + 14, 10, 'Top 10 - Highest Insider Conviction',
+        ['#', 'Ticker', 'Sector', 'Conv.', 'Net Buy ($)', 'Buyers', 'Upside', 'Signal'],
+        cv_rows, [f_ri, f_r, f_r, f_ri, f_rd, f_ri, f_rp, f_r])
+
+    # === REGIME x SECTOR MATRIX ===
+    mx = tk + 28
+    ws.merge_range(mx, 0, mx, 17, '  REGIME x SECTOR MATRIX (Stock Counts)', f_sec)
+    cross = pd.crosstab(df['Sector'], df['Regime'])
+    cross = cross.reindex(columns=sorted(cross.columns))
+    mhr = mx + 1
+    ws.write(mhr, 0, 'Sector \\ Regime', f_th)
+    for j, rg_name in enumerate(cross.columns):
+        ws.write(mhr, j + 1, rg_name, f_th)
+    ws.write(mhr, len(cross.columns) + 1, 'Total', f_th)
+    for i, (sector_name, crow) in enumerate(cross.iterrows()):
+        r = mhr + 1 + i
+        ws.write(r, 0, sector_name, f_td)
+        for j, rg_name in enumerate(cross.columns):
+            ws.write(r, j + 1, int(crow[rg_name]), f_ti)
+        ws.write(r, len(cross.columns) + 1, int(crow.sum()), f_ti)
+    if len(cross) > 0:
+        rng = '{}:{}'.format(
+            xl_rowcol_to_cell(mhr + 1, 1),
+            xl_rowcol_to_cell(mhr + len(cross), len(cross.columns)))
+        ws.conditional_format(rng, {
+            'type': '3_color_scale',
+            'min_color': '#FFFFFF', 'mid_color': '#BDD7EE', 'max_color': '#2F5496'})
+
+    # === COLUMN WIDTHS ===
+    ws.set_column(0, 0, 22)
+    ws.set_column(1, 1, 10)
+    ws.set_column(2, 8, 13)
+    ws.set_column(9, 9, 3)
+    ws.set_column(10, 10, 22)
+    ws.set_column(11, 17, 13)
+    ws.set_column(18, 19, 3)
+    ws.set_column(20, 21, 12)
+    ws.set_column(22, 30, 10)
+
+    print(f"  Analytics Dashboard: {n} stocks, {len(sec)} sectors, {len(reg)} regions.")
+
+
 # --- MAIN LOGIC ---
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Holden Valuation Model")
@@ -659,6 +1096,11 @@ if __name__ == "__main__":
             ALL_DATA.append(d)
         else:
             print(f"[{t}] FAILED. Moving to next ticker.\n")
+
+    if not ALL_DATA:
+        print("\n[!] No data successfully fetched. Exiting without generating spreadsheet.")
+        import sys
+        sys.exit(0)
 
     print("\nGenerating Dashboards...")
     writer = pd.ExcelWriter(
@@ -739,6 +1181,16 @@ if __name__ == "__main__":
         ref_de_ratio = get_ref(38)
         ref_div_yield = get_ref(39)
         ref_div_ex_date = get_ref(40)
+
+        # Analyst Price Target mapping (Columns 41-48)
+        ref_analyst_target_mean = get_ref(41)
+        ref_analyst_target_median = get_ref(42)
+        ref_analyst_target_low = get_ref(43)
+        ref_analyst_target_high = get_ref(44)
+        ref_analyst_target_upside = get_ref(45)
+        ref_mult_expansion = get_ref(46)
+        ref_analyst_target_count = get_ref(47)
+        ref_eps_90d_change = get_ref(48)
 
         dash_row, dash_col = 2, 15
         lists = {'Growth': 'Inputs!$A$2:$A$3', 'EPS': 'Inputs!$B$2:$B$3', 'PE': 'Inputs!$C$2:$C$4',
@@ -949,8 +1401,28 @@ if __name__ == "__main__":
         sheet.write(r, stats_col, "Estimate Dispersion", fmt['stat_label'])
         sheet.write_formula(r, stats_col + 1, f'=({dyn_ehigh}-{dyn_elo})/{dyn_emid}', fmt['stat_val_score'])
         r += 1
+        sheet.write(r, stats_col, "EPS Trend (90d)", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_eps_90d_change}', fmt['stat_val_score'])
+        eps90d_cell = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.conditional_format(eps90d_cell, {'type': 'cell', 'criteria': '<', 'value': 0, 'format': fmt['diag_warn']})
+        sheet.conditional_format(eps90d_cell, {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': fmt['diag_ok']})
+        r += 1
         sheet.write(r, stats_col, "Analyst Coverage (#)", fmt['stat_label'])
         sheet.write_formula(r, stats_col + 1, f'={ref_analysts}', fmt['stat_val_txt'])
+
+        # --- VALUATION LOGIC --- (moved above Quality & Risk)
+        r += 2
+        sheet.write(r, stats_col, "Valuation Logic", fmt['stat_subhead'])
+        r += 1
+        sheet.write(r, stats_col, "Implied P/E (Active)", fmt['stat_label'])
+        addr_active_pe = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.write_formula(r, stats_col + 1,
+                            f'={addr_price} / IF({addr_type_input}="Basic (GAAP)", {addr_basic}, {addr_street})',
+                            fmt['stat_val_pe_grey'])
+        r += 1
+        sheet.write(r, stats_col, "Forward P/E (Est.)", fmt['stat_label'])
+        addr_fwd_pe = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.write_formula(r, stats_col + 1, f'={addr_price} / {dyn_emid}', fmt['stat_val_pe'])
 
         # --- QUALITY & RISK PROFILE ---
         r += 2
@@ -1007,36 +1479,6 @@ if __name__ == "__main__":
         r += 1
         sheet.write(r, stats_col, "Dividend Ex Date", fmt['stat_label'])
         sheet.write_formula(r, stats_col + 1, f'={ref_div_ex_date}', fmt['stat_val_txt'])
-
-        r += 2
-        sheet.write(r, stats_col, "Valuation Logic", fmt['stat_subhead'])
-        r += 1
-        sheet.write(r, stats_col, "Implied P/E (Active)", fmt['stat_label'])
-        addr_active_pe = xl_rowcol_to_cell(r, stats_col + 1)
-        sheet.write_formula(r, stats_col + 1,
-                            f'={addr_price} / IF({addr_type_input}="Basic (GAAP)", {addr_basic}, {addr_street})',
-                            fmt['stat_val_pe_grey'])
-        r += 1
-        sheet.write(r, stats_col, "Forward P/E (Est.)", fmt['stat_label'])
-        addr_fwd_pe = xl_rowcol_to_cell(r, stats_col + 1)
-        sheet.write_formula(r, stats_col + 1, f'={addr_price} / {dyn_emid}', fmt['stat_val_pe'])
-
-        r += 2
-        sheet.write(r, stats_col, "Holden Resilience", fmt['stat_subhead'])
-        r += 1
-        sheet.write(r, stats_col, "Allowed Safety Cushion", fmt['stat_label'])
-        addr_cushion = xl_rowcol_to_cell(r, stats_col + 1)
-        sheet.write_formula(r, stats_col + 1, f'=({addr_active_pe} - {addr_fwd_pe}) / {addr_active_pe}',
-                            fmt['cushion_val'])
-        r += 1
-        sheet.write(r, stats_col, "Hist. Downside Risk", fmt['stat_label'])
-        addr_risk = xl_rowcol_to_cell(r, stats_col + 1)
-        sheet.write_formula(r, stats_col + 1, f'=MAX(0, ({addr_active_pe} - {ref_pel}) / {addr_active_pe})',
-                            fmt['risk_val'])
-        r += 1
-        sheet.write(r, stats_col, "Resilience Ratio", fmt['stat_label'])
-        sheet.write_formula(r, stats_col + 1, f'=IF({addr_risk}<=0, 99, {addr_cushion} / {addr_risk})',
-                            fmt['resilience_good'])
 
         r += 2
         sheet.write(r, stats_col, "Holden Score (Base)", fmt['stat_label'])
@@ -1101,6 +1543,43 @@ if __name__ == "__main__":
         sheet.write(r, stats_col, "Implied Signal", fmt['stat_label'])
         sheet.write_formula(r, stats_col + 1, f'={ref_regime_signal}', fmt['stat_val_txt'])
 
+        # --- ANALYST PRICE TARGET (12M CONSENSUS) ---
+        r += 2
+        sheet.write(r, stats_col, "Analyst Price Target (12M)", fmt['stat_subhead'])
+        r += 1
+        sheet.write(r, stats_col, "Mean Target (12M)", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_analyst_target_mean}', fmt['stat_val'])
+        r += 1
+        sheet.write(r, stats_col, "Median Target (12M)", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_analyst_target_median}', fmt['stat_val'])
+        r += 1
+        sheet.write(r, stats_col, "Target Low (12M)", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_analyst_target_low}', fmt['stat_val_blue'])
+        r += 1
+        sheet.write(r, stats_col, "Target High (12M)", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_analyst_target_high}', fmt['stat_val_blue'])
+        r += 1
+        sheet.write(r, stats_col, "Price Target Coverage (#)", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_analyst_target_count}', fmt['stat_val_txt'])
+        r += 1
+        sheet.write(r, stats_col, "Analyst Implied Upside", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_analyst_target_upside}', fmt['stat_val_score'])
+        analyst_up_cell = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.conditional_format(analyst_up_cell, {'type': 'cell', 'criteria': '<', 'value': 0, 'format': fmt['diag_warn']})
+        sheet.conditional_format(analyst_up_cell, {'type': 'cell', 'criteria': '>=', 'value': 0, 'format': fmt['diag_ok']})
+        r += 1
+        sheet.write(r, stats_col, "Multiple Expansion Signal", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'={ref_mult_expansion}', fmt['stat_val_score'])
+        mexp_cell = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.conditional_format(mexp_cell, {'type': 'cell', 'criteria': '>', 'value': 0.02, 'format': fmt['diag_ok']})
+        sheet.conditional_format(mexp_cell, {'type': 'cell', 'criteria': '<', 'value': -0.02, 'format': fmt['diag_warn']})
+        sheet.conditional_format(mexp_cell, {'type': 'cell', 'criteria': 'between', 'minimum': -0.02, 'maximum': 0.02, 'format': fmt['diag_mid']})
+        r += 1
+        sheet.write(r, stats_col, "Implied 12M P/E", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1,
+                            f'=IF({dyn_emid}=0, "N/A", {ref_analyst_target_mean}/{dyn_emid})',
+                            fmt['stat_val_pe'])
+
         # --- INSIDER ACTIVITY & CONVICTION SCORING ENGINE ---
         r += 2
         sheet.write(r, stats_col, "Insider Activity (L6M)", fmt['stat_subhead'])
@@ -1133,10 +1612,41 @@ if __name__ == "__main__":
         score_formula = f'=({p1}) + ({p2}) + ({p3})'
         sheet.write_formula(r, stats_col + 1, score_formula, fmt['stat_val_score_int'])
 
+        # --- HOLDEN RESILIENCE --- (moved to bottom)
+        r += 2
+        sheet.write(r, stats_col, "Holden Resilience", fmt['stat_subhead'])
+        r += 1
+        sheet.write(r, stats_col, "Allowed Safety Cushion", fmt['stat_label'])
+        addr_cushion = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.write_formula(r, stats_col + 1, f'=({addr_active_pe} - {addr_fwd_pe}) / {addr_active_pe}',
+                            fmt['cushion_val'])
+        r += 1
+        sheet.write(r, stats_col, "Hist. Downside Risk", fmt['stat_label'])
+        addr_risk = xl_rowcol_to_cell(r, stats_col + 1)
+        sheet.write_formula(r, stats_col + 1, f'=MAX(0, ({addr_active_pe} - {ref_pel}) / {addr_active_pe})',
+                            fmt['risk_val'])
+        r += 1
+        sheet.write(r, stats_col, "Resilience Ratio", fmt['stat_label'])
+        sheet.write_formula(r, stats_col + 1, f'=IF({addr_risk}<=0, 99, {addr_cushion} / {addr_risk})',
+                            fmt['resilience_good'])
+
         foot_row = r + 2
         sheet.write(foot_row, stats_col, "Holden Resilience Interpretation:", fmt['legend_bold'])
         sheet.write(foot_row + 1, stats_col, "> 1.0: Growth cushion covers historical downside (Safe)",
                     fmt['legend_norm'])
+
+        # --- Ownership Watermark ---
+        watermark_fmt = workbook.add_format({
+            'font_name': 'Arial', 'font_size': 8, 'font_color': '#A6A6A6',
+            'italic': True, 'align': 'left'
+        })
+        sheet.write(foot_row + 3, stats_col,
+                    f"Holden Valuation Model \u00a9 {datetime.date.today().year} Dylan H Wilding. All rights reserved.",
+                    watermark_fmt)
+        sheet.set_header('', {'margin': 0})
+        sheet.set_footer(
+            '&L&8&I Holden Valuation Model \u00a9 Dylan H Wilding — Proprietary & Confidential'
+        )
 
         sheet.set_column(0, 0, 2)
         sheet.set_column(1, 1, 6)
@@ -1163,7 +1673,8 @@ if __name__ == "__main__":
         "Conviction Score (0-10)", "Growth Diagnosis",
         "1Y Perf", "1Y EPS \u0394", "1Y P/E \u0394", "1Y ERG Score",
         "Impl. FWD Growth", "FCR", "ERG+", "Regime", "Signal",
-        "Net Profit Margin", "FCF Yield", "Debt/Equity", "Div. Yield", "Ex Date"
+        "Net Profit Margin", "FCF Yield", "Debt/Equity", "Div. Yield", "Ex Date", "Region",
+        "Analyst Mean Target", "Analyst Implied Upside", "Mult. Expansion Signal", "Implied 12M P/E"
     ]
     ws_comp.write_row(0, 0, cols, fmt_comp_h)
     comp_data = []
@@ -1229,11 +1740,16 @@ if __name__ == "__main__":
         regime_val = d['regime']
         signal_val = d['regime_signal']
 
+        # Implied 12M P/E = Analyst Mean Target / Forward EPS
+        implied_12m_pe = d['analyst_target_mean'] / eps_fwd if (d['analyst_target_mean'] > 0 and eps_fwd > 0.01) else 0.0
+
         comp_data.append([tick, name, sector, mcap, price, target_price, upside, pe_curr, pe_fwd, peg,
                           holden_score, cushion, resilience, insider, insider_count, avg_stake / 100, conviction_score,
                           growth_diag, perf_1y, eps_trend_1y, pe_trend_1y, erg_score,
                           implied_fwd_g, fcr_val, erg_plus_val, regime_val, signal_val,
-                          d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['div_yield'], d['div_ex_date']])
+                          d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['div_yield'], d['div_ex_date'], d['region'],
+                          d['analyst_target_mean'], d['analyst_target_upside'], d['multiple_expansion_signal'],
+                          implied_12m_pe])
 
     for i, row in enumerate(comp_data):
         ws_comp.write(i + 1, 0, row[0], fmt['comp_ticker'])
@@ -1275,6 +1791,11 @@ if __name__ == "__main__":
             ws_comp.write(i + 1, 29, val_de, fmt['comp_num'])
         ws_comp.write(i + 1, 30, row[30], fmt['comp_pct'])
         ws_comp.write(i + 1, 31, row[31], fmt['comp_txt'])
+        ws_comp.write(i + 1, 32, row[32], fmt['comp_txt'])  # Region
+        ws_comp.write(i + 1, 33, row[33], fmt['comp_num'])  # Analyst Mean Target
+        ws_comp.write(i + 1, 34, row[34], fmt['comp_pct'])  # Analyst Implied Upside
+        ws_comp.write(i + 1, 35, row[35], fmt['comp_pct'])  # Mult. Expansion Signal
+        ws_comp.write(i + 1, 36, row[36], fmt['comp_pe'])   # Implied 12M P/E
 
     if comp_data:
         ws_comp.add_table(0, 0, len(comp_data), len(cols) - 1, {
@@ -1292,9 +1813,30 @@ if __name__ == "__main__":
     ws_comp.set_column(18, 24, 14)
     ws_comp.set_column(25, 26, 22)
     ws_comp.set_column(27, 28, 14)
-    ws_comp.set_column(29, 30, 14)
+    ws_comp.set_column(29, 31, 14)
+    ws_comp.set_column(32, 32, 18)  # Region
+    ws_comp.set_column(33, 36, 16)  # Analyst Target columns
 
-    # 3. CREATE INPUTS SHEET
+    # --- Ownership Watermark (Comparison Sheet) ---
+    watermark_fmt_comp = workbook.add_format({
+        'font_name': 'Arial', 'font_size': 8, 'font_color': '#A6A6A6',
+        'italic': True, 'align': 'left'
+    })
+    ws_comp.write(len(comp_data) + 2, 0,
+                  f"Holden Valuation Model \u00a9 {datetime.date.today().year} Dylan H Wilding. All rights reserved.",
+                  watermark_fmt_comp)
+    ws_comp.set_footer(
+        '&L&8&I Holden Valuation Model \u00a9 Dylan H Wilding — Proprietary & Confidential'
+    )
+
+    # 3. GENERATE ANALYTICS DASHBOARD
+    if len(comp_data) >= ANALYTICS_MIN_STOCKS:
+        print("  Generating Analytics Dashboard...")
+        build_analytics_dashboard(workbook, comp_data, cols)
+    else:
+        print(f"  Skipping Analytics Dashboard (need {ANALYTICS_MIN_STOCKS}+ stocks, have {len(comp_data)}).")
+
+    # 4. CREATE INPUTS SHEET
     print("  Generating Inputs Sheet...")
     ws_inputs = workbook.add_worksheet("Inputs")
     try:
@@ -1325,7 +1867,10 @@ if __name__ == "__main__":
                'EPS Low Nxt', 'EPS Mid Nxt', 'EPS High Nxt', 'Est Target FY Nxt', 'Unique Buyers Count',
                'Avg Stake Increase %', 'Perf 1Y', 'EPS Trend 1Y', 'PE Trend 1Y',
                'Implied FWD Growth', 'FCR', 'ERG+', 'Regime', 'Regime Signal',
-               'Profit Margin', 'FCF Yield', 'Debt to Equity', 'Div Yield', 'Ex Date']
+               'Profit Margin', 'FCF Yield', 'Debt to Equity', 'Div Yield', 'Ex Date',
+               'Analyst Target Mean', 'Analyst Target Median', 'Analyst Target Low', 'Analyst Target High',
+               'Analyst Target Upside', 'Multiple Expansion Signal', 'Analyst Target Count',
+               'EPS 90d Change']
 
     fmt_head = workbook.add_format({'bold': True, 'bottom': 1})
     ws_inputs.write_row(data_start_row, 0, headers, fmt_head)
@@ -1340,7 +1885,11 @@ if __name__ == "__main__":
                     d['est_year_str_nxt'], d['insider_buy_count'], d['insider_avg_stake_inc'],
                     d['perf_1y'], d['eps_trend_1y'], d['pe_trend_1y'],
                     d['implied_fwd_growth'], d['fcr'], d['erg_plus'], d['regime'], d['regime_signal'],
-                    d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['div_yield'], d['div_ex_date']]
+                    d['profit_margin'], d['fcf_yield'], d['de_ratio'], d['div_yield'], d['div_ex_date'],
+                    d['analyst_target_mean'], d['analyst_target_median'],
+                    d['analyst_target_low'], d['analyst_target_high'],
+                    d['analyst_target_upside'], d['multiple_expansion_signal'],
+                    d['analyst_target_count'], d['eps_90d_change']]
         ws_inputs.write_row(r, 0, row_data)
 
     writer.close()

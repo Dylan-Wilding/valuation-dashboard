@@ -72,6 +72,12 @@ pip install pandas numpy xlsxwriter yfinance requests beautifulsoup4
 
 ## License
 
-© 2026 Dylan Holden Wilding. All rights reserved.
+© 2026 Dylan H Wilding. All rights reserved.
 
-This project is provided for informational and research purposes only and does not constitute investment advice.
+This software, its algorithms, scoring methodologies, and all associated outputs are the exclusive intellectual property of Dylan H Wilding. Unauthorized copying, distribution, modification, reverse-engineering, or commercial use is strictly prohibited without prior written consent.
+
+Any third-party use (including investment clubs, partnerships, or professional firms) constitutes a limited, non-exclusive, revocable license granted at the sole discretion of the author. Such use does not transfer ownership or intellectual property rights of any kind.
+
+See [LICENSE](LICENSE) for full terms.
+
+This project is provided for informational and research purposes only and does not constitute investment, legal, tax, or accounting advice.
