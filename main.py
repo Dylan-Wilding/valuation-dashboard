@@ -1,20 +1,3 @@
-# =============================================================================
-# Holden Valuation Model
-# Copyright (c) 2026 Dylan H Wilding. All rights reserved.
-#
-# PROPRIETARY AND CONFIDENTIAL — This source code, its algorithms, scoring
-# methodologies, and all associated outputs are the exclusive intellectual
-# property of Dylan H Wilding. Unauthorized copying, distribution,
-# modification, reverse-engineering, or commercial use of this file, in
-# whole or in part, is strictly prohibited without prior written consent.
-#
-# Any use of this model by third parties (including but not limited to
-# investment clubs, partnerships, or firms) constitutes a limited,
-# non-exclusive, revocable license granted at the sole discretion of the
-# author. Such use does not transfer ownership or intellectual property
-# rights of any kind.
-# =============================================================================
-#
 # Date: 2026-03-14
 # Author: Dylan H WILDING
 # LLMs used : Gemini 3.1 Pro, Claude Sonnet 4.6
@@ -33,23 +16,7 @@ import argparse
 
 # --- CONFIGURATION ---
 
-TICKERS = ["NVDA", "AMZN", "GOOG", "META", "TEP.PA", "BNP.PA", "CRM", "MU", "TEAM", "APP", "ADBE", "WDAY", "INTU", "TXN"]
-
-""" TICKERS = [
-    "AA", "AAPL", "ACN", "AFRM", "AERO", "AMZN", "AMD", "APGA", "AR", 
-    "ASML", "AVGO", "AXP", "AXTI", "BABA", "BA", "BAC", "BE", "BFAM", 
-    "BILL", "BITW", "BK", "BKV", "BLK", "BRKBB", "BRKRP", "BSX", "CCC", 
-    "CEG", "CLH", "CMG", "CNDT", "COF", "COYA", "CPNG", "CRM", "CROX", 
-    "CRS", "CYBR", "DASH", "DAY", "DECK", "DIS", "DKNG", "DKS", "DOCS", 
-    "ESTC", "EWY", "FICO", "FIS", "FISV", "FLUT", "GOOG", "GOOGL", "GPK", 
-    "GPN", "HSIC", "HUTH", "IAC", "JELD", "JPM", "KBR", "KKR", "LEN", 
-    "LSC", "LYV", "MA", "MCO", "MDLN", "META", "MOH", "MSFT", "MU", "NGD", 
-    "NVDA", "NVTS", "NYT", "ODD", "PINS", "PONY", "PYPL", "RSP", "SCHW", 
-    "SE", "SLM", "SNPS", "SOLS", "SPB", "SPOT", "SPY", "STLA", "TDY", 
-    "TEAM", "THC", "THRY", "TMO", "TSM", "TV", "TWFG", "UBER", "UNH", 
-    "V", "VMC", "WBD", "WING", "WULF", "WYNN", "Z", "ZG"
-]"""
-
+TICKERS = ["NVDA", "AMZN", "GOOG", "META", "TEP.PA", "BNP.PA", "CRM", "MU", "TEAM", "APP", "ADBE", "WDAY", "INTU", "TXN", "NOW", "FIS", "ASML", "SNDK", "SOFI", "MRVL"]
 
 BASE_DIR = Path(__file__).resolve().parent
 FILENAME = BASE_DIR / "Dashboard.xlsx"
@@ -1894,3 +1861,20 @@ if __name__ == "__main__":
 
     writer.close()
     print(f"\nSaved successfully to: {FILENAME}")
+
+# =============================================================================
+# Holden Valuation Model
+# Copyright (c) 2026 Dylan H Wilding. All rights reserved.
+#
+# PROPRIETARY AND CONFIDENTIAL — This source code, its algorithms, scoring
+# methodologies, and all associated outputs are the exclusive intellectual
+# property of Dylan H Wilding. Unauthorized copying, distribution,
+# modification, reverse-engineering, or commercial use of this file, in
+# whole or in part, is strictly prohibited without prior written consent.
+#
+# Any use of this model by third parties (including but not limited to
+# investment clubs, partnerships, or firms) constitutes a limited,
+# non-exclusive, revocable license granted at the sole discretion of the
+# author. Such use does not transfer ownership or intellectual property
+# rights of any kind.
+# =============================================================================
